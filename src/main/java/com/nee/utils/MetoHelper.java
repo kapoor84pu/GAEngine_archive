@@ -4,7 +4,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+/**
+ * 
+ * @author neelam.kapoor
+ *
+ */
 public class MetoHelper {
 	
 	public static Date convertStringIntoDate(String date){
