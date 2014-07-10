@@ -29,10 +29,8 @@
 						<th>Pressure</th>
 					</tr>
 					<%	for(MetoDataJPA temp : list){  %>
-		
-					
 					<tr>
-						<td><%=temp.getDate() %></td>
+						<td><%=temp.getWeatherDate() %></td>
 						<td><%=temp.getRegions() %></td>
 						<td><%=temp.getTemperature() %></td>
 						<td><%=temp.getPressure() %></td>

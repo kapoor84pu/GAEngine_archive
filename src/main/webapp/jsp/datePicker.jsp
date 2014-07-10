@@ -9,6 +9,8 @@
 			$(function () {
 				$('#fromDate').datepicker({ dateFormat: 'yy/mm/dd' });
 				$('#fromDate').datepicker();
+				$('#toDate').datepicker({ dateFormat: 'yy/mm/dd' });
+				$('#toDate').datepicker();
 			});
 		</script> 
 		<style>
@@ -21,8 +23,10 @@
 				<div class="leftBase">
 					<table id="tblTest">
 						 <tr>
-							 <td>Date: </td>
+							 <td>From Date : </td>
 							 <td><input type="text" id="fromDate" value="" name="fromDate"  /></td>
+							 <td>To Date : </td>
+							 <td><input type="text" id="toDate" value="" name="toDate"  /></td>
 						 </tr>
 					</table>
 				</div>
