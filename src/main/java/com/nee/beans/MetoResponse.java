@@ -2,6 +2,7 @@ package com.nee.beans;
 
 /**
  * This class gives a response that includes message and entity.
+ *  @author neelam.kapoor 
  */
 
 import com.google.appengine.api.datastore.Entity;

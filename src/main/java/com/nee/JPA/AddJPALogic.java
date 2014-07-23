@@ -1,13 +1,16 @@
 package com.nee.JPA;
 
 import java.util.Date;
+import java.util.List;
+
 import javax.persistence.EntityManager;
+
 import com.nee.beans.MetoDataJPA;
+import com.nee.beans.MetoResponse;
 
 /**
  * This class takes weather data parameters and persists them on data stores.
- * @author Admin
- *
+ * @author neelam.kapoor
  */
 
 public enum AddJPALogic {
@@ -21,23 +24,49 @@ public enum AddJPALogic {
 	 * @param pressure
 	 * @return "FAILURE" or "SUCCESS" as response
 	 */
-	public String add(Date date, String regions, String temperature, String pressure ){
+	public MetoResponse add(Date date, String regions, String temperature, String pressure ){
+		MetoResponse metoResponse = null;
 		EntityManager em = EMFService.get().createEntityManager();
-		
-		
-		try {
-			MetoDataJPA mJPA = new MetoDataJPA(date, regions, temperature,pressure);
-			
+		try {			
+			MetoDataJPA mJPA = new MetoDataJPA(date + ":" + regions, date, regions, temperature,pressure);			
 			em.persist(mJPA);
 			System.out.println("stored entity id : " + em.toString());
+			 metoResponse = new MetoResponse("SUCCESS",null);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "FAILURE";
+			 metoResponse = new MetoResponse("FAILURE",null);
 		}
 		finally{
 			em.close();
 		}
-		return "SUCCESS";
+		return metoResponse;
 	}
+
+	//Method overloading
+	public MetoResponse add(List<MetoDataJPA> metoDataList) {
+		EntityManager em = null;
+		MetoResponse metoResponse = null;
+		
+		em = EMFService.get().createEntityManager();
+		try {
+			for(MetoDataJPA tempObj:metoDataList){
+				em = EMFService.get().createEntityManager();
+				System.out.println("Processing " + tempObj);
+ 				
+				em.persist(tempObj);
+				System.out.println("stored entity id : " + em.toString());
+				metoResponse = new MetoResponse("SUCCESS",null);
+				em.close();
+			} 
+			System.out.println("All finished ");
+		} catch (Exception e) {
+				e.printStackTrace();
+				metoResponse = new MetoResponse("FAILURE",null);
+		}finally{
+				
+			}
+		return metoResponse;
+	}
+
 }

@@ -3,20 +3,18 @@ package com.nee.beans;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
  * This class contains all weather data
- * @author Admin
+ * @author neelam.kapoor
  *
  */
+
 @Entity
 public class MetoDataJPA {
 
 	@Id	
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private String id;
 	private Date weatherDate;
 	private String regions;
@@ -25,14 +23,22 @@ public class MetoDataJPA {
 	
 	public MetoDataJPA(){}
 		
-	public MetoDataJPA(Date weatherDate, String regions,
+	public MetoDataJPA(String id, Date weatherDate, String regions,
 			String temperature, String pressure) {
+		this.id = id;
 		this.weatherDate = weatherDate;
 		this.regions = regions;
 		this.temperature = temperature;
 		this.pressure = pressure;
 	}
 	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 	
 	public Date getWeatherDate() {
 		return weatherDate;
@@ -68,6 +74,11 @@ public class MetoDataJPA {
 				+ regions + ", temperature=" + temperature + ", pressure="
 				+ pressure + "]";
 	}
+	
+	public String getStringRepresentation(){
+		return this.getWeatherDate()+","+this.getRegions()+","+this.getTemperature()+","+this.getPressure() + "\n";
+	}
+    
 		
 		
 }

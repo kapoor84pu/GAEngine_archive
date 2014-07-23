@@ -7,77 +7,74 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import com.google.common.collect.Lists;
+import com.nee.beans.MetaData;
 import com.nee.beans.MetoDataJPA;
 
 /**
  * This class retrieves weather data from database and returns a list to calling servlet.
- * @author Admin
+ * @author neelam.kapoor
  *
  */
 public enum GetJPALogic {
 	INSTANCE;
 	
 	/**
-	 *ONLY FOR TEST
-	 * This method takes date and region and returns a list of weather data for that date and region. 
-	 * @param date
-	 * @param regions
-	 * @return
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<MetoDataJPA> getWeatherData(Date date, String regions){
-		List<MetoDataJPA> list = null;
-		
-		System.out.println("received regions and date" + date + regions);
-		
-		EntityManager em = EMFService.get().createEntityManager();
-		try {
-			//Query query = em.createQuery("select m from MetoDataJPA m");
-			Query query = em.createQuery("select m from MetoDataJPA m where m.weatherDate = :weatherDate");
-			
-			//prepare statement
-			query.setParameter("weatherDate", date);
-			System.out.println("printing query" + query.toString());
-			
-			list = new ArrayList(query.getResultList());
-			System.out.println(list.toString());
-		} finally{
-			em.close();
-		}
-		
-		return list;
-	}
-	
-	/**
-	 * This method takes fromDate, toDate and region and returns weather data from fromDate to toDate for thast region.
+	 * This method returns weather data from fromDate to toDate for single/list of regions.
 	 * @param fromDate
 	 * @param toDate
 	 * @param regions
 	 * @return list of MetoDataJPA objects
 	 */
 	//search weather data  between two dates
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List<MetoDataJPA> getWeatherBetweenDates(Date fromDate, Date toDate, String regions){
-		List<MetoDataJPA> list = null;
+	@SuppressWarnings({ "unchecked" })
+	public List<MetoDataJPA> getWeatherBetweenDates(Date fromDate, Date toDate, String[] regions){
+		List<MetoDataJPA> list = Lists.newArrayList();
 		
-		System.out.println("received regions and date" + fromDate + toDate);
+		System.out.println("received fromDate and toDate" + fromDate + toDate);
+		System.out.println("list of regions" + regions);
 		
+		for(String reg: regions){
+			if (!reg.equals("")){
+			EntityManager em = EMFService.get().createEntityManager();
+			try {
+				Query query = em.createQuery("SELECT m FROM MetoDataJPA m WHERE m.weatherDate BETWEEN :startDate AND :endDate AND m.regions = :locations ORDER BY m.regions");
+				query.setParameter("locations", reg);
+				query.setParameter("startDate", fromDate);
+				query.setParameter("endDate", toDate);
+				
+				System.out.println("printing query" + query.toString());
+				
+				list.addAll(query.getResultList());
+				System.out.println("+++++++++++++++++" + list.toString());
+			}finally{
+				em.close();
+			}
+			}
+		}
+		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<MetaData> getProductBetweenDates(Date fromDate, Date toDate){
+		List<MetaData> list = new ArrayList<MetaData>();
 		EntityManager em = EMFService.get().createEntityManager();
 		try {
-			Query query = em.createQuery("SELECT m FROM MetoDataJPA m WHERE m.weatherDate BETWEEN :startDate AND :endDate AND m.regions = :locations");
-			query.setParameter("locations", regions);
-			query.setParameter("startDate", fromDate);
-			query.setParameter("endDate", toDate);
-			
+			Query query = em.createQuery("SELECT p FROM MetaData p WHERE p.validityDate BETWEEN :startDate AND :endDate");
+		//	Query query = em.createQuery("SELECT p FROM MetaData p WHERE p.validityDate = :startDate");
+		//	Query query = em.createQuery("SELECT p FROM MetaData p WHERE p.clientId ='1000001'");
+				query.setParameter("startDate", fromDate);
+				query.setParameter("endDate", toDate);
+				
 			System.out.println("printing query" + query.toString());
+			list =  query.getResultList();
 			
-			list = new ArrayList(query.getResultList());
-			System.out.println(list.toString());
-		} finally{
+			System.out.println("+++++++++++++++++" + list.toString());
+		}finally{
 			em.close();
 		}
-		
-		return list;
+	
+	return list;
 	}
 
 }

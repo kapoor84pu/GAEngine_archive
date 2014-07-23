@@ -12,13 +12,27 @@
 				$('#toDate').datepicker({ dateFormat: 'yy/mm/dd' });
 				$('#toDate').datepicker();
 			});
+		</script>
+		<script>
+			checked = false;
+			function checkedAll () {
+				if (checked == false){
+					checked = true
+				}else{
+					checked = false
+				}
+				for (var i = 0; i < document.getElementById('myform').elements.length; i++) {
+						document.getElementById('myform').elements[i].checked = checked;
+				}
+			}
+			
 		</script> 
 		<style>
 			.ui-datepicker th { background-color: #CCCCFF; }
 		</style>
 	</head>
 	<body  >
-		<form action="/getJPA" method="post">
+		<form action="/getJPA" method="post" id="myform">
 			<div class="base">
 				<div class="leftBase">
 					<table id="tblTest">
@@ -31,17 +45,17 @@
 					</table>
 				</div>
 				<div class="rightBase">
-					<input type="radio" name="regions" value="ALL">All Regions<br>
-					<input type="radio" name="regions" value="LON">London<br>
-					<input type="radio" name="regions" value="SW_ENG">South West England<br>
-					<input type="radio" name="regions" value="NE_ENG">North East England<br>
-					<input type="radio" name="regions" value="NW_ENG_N_WAL">North West England and North Wales<br>
-					<input type="radio" name="regions" value="SC_ENG">South Central England<br>
-					<input type="radio" name="regions" value="C_SCO">Scotland Central<br>
-					<input type="radio" name="regions" value="E_ENG">Eastern England<br>
-					<input type="radio" name="regions" value="N_SCO">Scotland North<br>
-					<input type="radio" name="regions" value="S_WAL">South Wales<br>
-					<input type="radio" name="regions" value="N_IRE">Northern Ireland<br>
+					<input type="checkbox" value="ALL" onclick="checkedAll();">All Regions<br>
+					<input type="checkbox" name="regions" value="LON">London<br>
+					<input type="checkbox" name="regions" value="SW_ENG">South West England<br>
+					<input type="checkbox" name="regions" value="NE_ENG">North East England<br>
+					<input type="checkbox" name="regions" value="NW_ENG_N_WAL">North West England and North Wales<br>
+					<input type="checkbox" name="regions" value="SC_ENG">South Central England<br>
+					<input type="checkbox" name="regions" value="C_SCO">Scotland Central<br>
+					<input type="checkbox" name="regions" value="E_ENG">Eastern England<br>
+					<input type="checkbox" name="regions" value="N_SCO">Scotland North<br>
+					<input type="checkbox" name="regions" value="S_WAL">South Wales<br>
+					<input type="checkbox" name="regions" value="N_IRE">Northern Ireland<br>
 					<br><br>
 					<input type="submit" value="Continue"><br>
 				</div>

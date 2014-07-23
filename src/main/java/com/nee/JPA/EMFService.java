@@ -3,6 +3,11 @@ package com.nee.JPA;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+/**
+ * 
+ * @author neelam.kapoor
+ *
+ */
 public class EMFService {
 	
 	/*transactions-optional is the configuration in persitence.xml, 

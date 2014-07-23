@@ -2,7 +2,7 @@ package com.nee.beans;
 
 /**
  * This class takes fromDate and region parameters and create a request.
- * @author Admin
+ * @author neelam.kapoor
  *
  */
 
