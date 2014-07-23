@@ -7,8 +7,8 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
-  <groupId>uk.gove.metoffice.cloud</groupId>
+  <version>1.0.0-SNAPSHOT</version>
+  <groupId>uk.gov.metoffice.cloud</groupId>
   <artifactId>retail-online-archive</artifactId>
   <properties>
     <appengine.app.version>1</appengine.app.version>
@@ -140,12 +140,12 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>17.0</version>
+      <version>15.0</version>
     </dependency>
     <dependency>
       <groupId>com.google.appengine.tools</groupId>
       <artifactId>appengine-gcs-client</artifactId>
-      <version>0.3.13</version>
+      <version>0.4</version>
     </dependency>
   </dependencies>
   <build>
