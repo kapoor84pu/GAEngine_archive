@@ -1,0 +1,15 @@
+<div>
+	<div  ng-controller="QueryBarCtrl">
+		Query Bar:
+		<pre>
+		fromDate:      {{dates.from | date:'fullDate'}}
+		toDate:        {{dates.to | date:'fullDate'}}
+
+		</pre>
+		<button ng-click="newDate()">New Date</button>
+		<hr>
+		<hr>
+
+		<date-range-selector dates="dates"></date-range-selector>
+	</div>
+</div>
