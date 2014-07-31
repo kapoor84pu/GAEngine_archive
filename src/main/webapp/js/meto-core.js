@@ -5,6 +5,8 @@ $(function () {
 	$('#fromDate').datepicker();
 	$('#toDate').datepicker({ dateFormat: 'yy/mm/dd' });
 	$('#toDate').datepicker();
+	$('#fromLogDateTime').datetimepicker();
+	$('#toLogDateTime').datetimepicker();
 });
 
 var checked = false;

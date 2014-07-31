@@ -24,7 +24,7 @@ public enum JPAPersistenceService {
 		EntityManager em = null;
 		MetoResponse metoResponse = null;
 		
-		em = EMF.get().createEntityManager();
+	//	em = EMF.get().createEntityManager();
 		try {
 			for(MetoDataJPA tempObj:metoDataList){
 				em = EMF.get().createEntityManager();
@@ -32,14 +32,14 @@ public enum JPAPersistenceService {
  				
 				em.persist(tempObj);
 				metoResponse = new MetoResponse("SUCCESS",null);
-				em.close();
+				em.close();	
 			} 
 			logger.info("Finished with persisting entities");
 		} catch (Exception e) {
 			logger.error("Error in persisting entity ", e);
 			metoResponse = new MetoResponse("FAILURE",null);
 		}finally{
-				
+		//TODO: close em here rather than in loop.
 			}
 		return metoResponse;
 	}
@@ -86,7 +86,7 @@ public enum JPAPersistenceService {
 	 * @return list of MetoDataJPA objects
 	 */
 	@SuppressWarnings({ "unchecked" })
-	public List<MetoDataJPA> getWeatherBetweenDates(Date fromDate, Date toDate, String[] regions){
+	public List<MetoDataJPA> getWeatherBetweenDates(Date fromDate, Date toDate, String[] regions,String clientId){
 		List<MetoDataJPA> list = Lists.newArrayList();
 		
 		logger.info("received fromDate: " + fromDate + " toDate " + toDate + "and Regions" + regions);
@@ -95,10 +95,12 @@ public enum JPAPersistenceService {
 			if (!reg.equals("")){
 			EntityManager em = EMF.get().createEntityManager();
 			try {
-				Query query = em.createQuery("SELECT m FROM MetoDataJPA m WHERE m.weatherDate BETWEEN :startDate AND :endDate AND m.regions = :locations ORDER BY m.regions");
+				Query query = em.createQuery("SELECT m FROM MetoDataJPA m WHERE m.weatherDate BETWEEN :startDate AND :endDate "
+						+ "							AND m.regions = :locations AND m.clientId = :clientID ORDER BY m.regions");
 				query.setParameter("locations", reg);
 				query.setParameter("startDate", fromDate);
 				query.setParameter("endDate", toDate);
+				query.setParameter("clientID", clientId);
 				
 				list.addAll(query.getResultList());
 				logger.info("for query " + query.toString() + "result list is " + list.toString());
@@ -117,13 +119,15 @@ public enum JPAPersistenceService {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List<MetaData> getProductBetweenDates(Date fromDate, Date toDate){
+	public List<MetaData> getProductBetweenDates(Date fromDate, Date toDate, String clientId){
 		List<MetaData> list = new ArrayList<MetaData>();
 		EntityManager em = EMF.get().createEntityManager();
 		try {
-			Query query = em.createQuery("SELECT p FROM MetaData p WHERE p.validityDate BETWEEN :startDate AND :endDate");
+			Query query = em.createQuery("SELECT p FROM MetaData p WHERE p.validityDate BETWEEN :startDate "
+					+ "							AND :endDate AND p.clientId = :clientID");
 			query.setParameter("startDate", fromDate);
 			query.setParameter("endDate", toDate);
+			query.setParameter("clientID", clientId);
 				
 			list =  query.getResultList();
 			

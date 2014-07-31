@@ -1,7 +1,5 @@
 package uk.co.metoffice.beans;
 
-import java.util.List;
-
 import uk.co.metoffice.beans.xml.IngestionConfiguration;
 
 /**
@@ -18,22 +16,27 @@ public class MetoRequest {
 	private String region;
 	private IngestionConfiguration ingestionConfiguration;
 	private MetaData metaData;
+	private String clientId;
 
-	
 	public MetoRequest(){
 		
 	}
+	
+	public MetoRequest(String fromDate, String toDate) {
+		this.fromDate = fromDate;
+		this.toDate = toDate;
+	}
 
-	public MetoRequest(String fromDate, String toDate, String region) {
-		super();
+	public MetoRequest(String fromDate, String toDate, String region, String clientId) {
 		this.fromDate = fromDate;
 		this.toDate = toDate;
 		this.region = region;
+		this.clientId = clientId;
 	}
-	public MetoRequest(String fromDate, String region) {
-		super();
+	public MetoRequest(String fromDate, String region, String clientId) {
 		this.fromDate = fromDate;
 		this.region = region;
+		this.clientId = clientId;
 	}
 	public String getFromDate() {
 		return fromDate;
@@ -77,6 +80,13 @@ public class MetoRequest {
 
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
+	}
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
 	}
 	
 }

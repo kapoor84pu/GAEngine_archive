@@ -61,8 +61,9 @@ public enum GCSPersistenceService {
 			
 	        //open output channel to write object using GcsFileOptions, a container class for creating Google storage files
 	        outputChannel = gcsService.createOrReplace(getFileName(ENDPOINT_BASE + BUCKET + "/" + filekey),  GcsFileOptions.getDefaultInstance());
-	        //convert String into byte stream and write it in bucket
+	        //convert String into byte stream 
 	        InputStream stream = new ByteArrayInputStream(encodedData.getBytes(StandardCharsets.UTF_8));
+	        // write it in bucket
 	        copy(stream, Channels.newOutputStream(outputChannel));
 	        metoResponse.setFilekey(filekey);
 						
@@ -72,6 +73,12 @@ public enum GCSPersistenceService {
 		
 		return metoResponse;
   	}
+  	
+  	/**
+  	 * This method takes filename and search into bucket and returns a input stream
+  	 * @param request
+  	 * @return MetoResponse.setStream() 
+  	 */
 	
 	public MetoResponse getDocumentStream(MetoRequest request){
 
@@ -80,7 +87,7 @@ public enum GCSPersistenceService {
 		MetoResponse metoResponse = new MetoResponse();
 		
 		String filename = request.getFilename();
-		System.out.println("getting for the file : " + ENDPOINT_BASE + BUCKET + "/" + filename);
+		logger.info("getting for the file : " + ENDPOINT_BASE + BUCKET + "/" + filename);
 		GcsFilename fileName = getFileName(ENDPOINT_BASE + BUCKET + "/" + filename.toLowerCase());
 
 		try {
@@ -93,9 +100,8 @@ public enum GCSPersistenceService {
 		    metoResponse.setStream(b64is);
 						
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while fetching" + filename + "from GCS", e);
 		}
-		
 		return metoResponse;
 	}
 	

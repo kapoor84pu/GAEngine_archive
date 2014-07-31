@@ -1,9 +1,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<%@ page import="java.util.*" %>
 <head>
 	<title>METO - Welcome 02</title>
 	<jsp:include page="common/metadata.jsp" />
 </head>
+
+<%
+	// Get Cookies and check if the cookie is present
+
+	// If not
+	Cookie cookie = new Cookie("RetailPortal","1");
+	response.addCookie(cookie);
+	
+	//Cookie cookie = new Cookie("RetailPortal","ClientID=2");
+	//response.addCookie(cookie);
+%>
 
 <body id="home">
 	<div id="wrap">

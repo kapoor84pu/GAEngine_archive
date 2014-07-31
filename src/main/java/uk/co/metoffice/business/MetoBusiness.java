@@ -20,11 +20,12 @@ import uk.co.metoffice.beans.MetoResponse;
 import uk.co.metoffice.beans.xml.IngestionConfiguration;
 import uk.co.metoffice.service.GCSPersistenceService;
 import uk.co.metoffice.service.JPAPersistenceService;
-import uk.co.metoffice.util.MetoHelper;
+import uk.co.metoffice.util.AppHelper;
 import uk.co.metoffice.util.StreamProcessor;
 
 /**
- * 
+ * This class lies between service classes and resource classes. Get the parameters from resource class
+ * and ask service class to process and give the results back.
  * @author neelam.kapoor
  *
  */
@@ -32,9 +33,9 @@ public class MetoBusiness {
 	private final static Logger logger = LoggerFactory.getLogger(MetoBusiness.class);
 
 	/**
-	 * 
-	 * @param request
-	 * @return
+	 * Take fromDate, toDate and clientId, and give back a list of products/pdf between two dates.
+	 * @param MetoRequest (fromDate, toDate and clientId)
+	 * @return MetoResponse
 	 */
 	public MetoResponse getHistoProduct(MetoRequest request){
 		List<MetaData> list = null;
@@ -42,26 +43,29 @@ public class MetoBusiness {
 
 		try {
 			//TODO investigate about date conversion error
-			Date dateFrom = MetoHelper.convertStringIntoDate(request.getFromDate(), "yyyy/MM/dd");
-			Date dateTo = MetoHelper.convertStringIntoDate(request.getToDate(), "yyyy/MM/dd");
+			Date dateFrom = AppHelper.convertStringIntoDate(request.getFromDate());
+			Date dateTo = AppHelper.convertStringIntoDate(request.getToDate());
 			
-			System.out.println("printing fromDate and toDate after conversion" + dateFrom + dateTo);
+			String clientId = request.getClientId();
 			
-			list = JPAPersistenceService.INSTANCE.getProductBetweenDates(dateFrom,dateTo);
+			logger.debug("printing fromDate and toDate after conversion" + dateFrom + dateTo + clientId);
 			
-			System.out.println("inside metoget resource and list from database is" + list.toString());
+			list = JPAPersistenceService.INSTANCE.getProductBetweenDates(dateFrom, dateTo, clientId);
+			
+			logger.info("inside metoget resource and list from database is" + list.toString());
 			metoResponse.setMetaDataList(list);
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("error in getHistoProduct class", ex);
 		}
 		return metoResponse;
 	}
 	
 		/**
 		 * 
-		 * @param request
-		 * @return
+		 * Take fromDate, toDate and clientId, and give back a list of plain/csv data between two dates.
+		 * @param MetoRequest (fromDate, toDate and clientId)
+		 * @return MetoResponse
 		 */
 		public MetoResponse getHistoData(MetoRequest request){
 			List<MetoDataJPA> list = null;
@@ -70,28 +74,30 @@ public class MetoBusiness {
 
 			try {
 				String[] region = createStringArray(request.getRegion());
-				Date dateFrom = MetoHelper.convertStringIntoDate(request.getFromDate(), "yyyyMMdd");
-				Date dateTo = MetoHelper.convertStringIntoDate(request.getToDate(), "yyyyMMdd");
+				Date dateFrom = AppHelper.convertStringIntoDate(request.getFromDate(), "yyyyMMdd");
+				Date dateTo = AppHelper.convertStringIntoDate(request.getToDate(), "yyyyMMdd");
+				String clientId = request.getClientId();
 
-				list = JPAPersistenceService.INSTANCE.getWeatherBetweenDates(dateFrom, dateTo, region);
+				list = JPAPersistenceService.INSTANCE.getWeatherBetweenDates(dateFrom, dateTo, region,clientId);
 				
-				System.out.println("printing fromDate and toDate after conversion" + dateFrom + dateTo);
-				System.out.println("inside metoget resource and list from database is" + list.toString());
+				logger.debug("printing fromDate and toDate after conversion" + dateFrom + dateTo);
+				logger.debug("inside metoget resource and list from database is" + list.toString());
+				//convert list into String
 				String str = createString(list);
 				is = new ByteArrayInputStream(str.toString().getBytes("UTF-8"));
 				metoResponse.setStream(is);
 
 			} catch (Exception ex) {
-				ex.printStackTrace();
+				logger.error("", ex);
 			}
 			return metoResponse;
 		}
 		
 		
 		/**
-		 * This method receives a request and extracts file as request.getFile().
+		 * This method receives a request and extracts file from it as request.getFile().
 		 * According to file type send them to persistence service class. So if it's
-		 * CSV-JPA Persistence Service or if its PDF - GCS Persistence Service
+		 * CSV then JPA Persistence Service or if its PDF then GCS Persistence Service
 		 * @param MetoRequest
 		 * @return MetoResponse object
 		 */
@@ -113,7 +119,7 @@ public class MetoBusiness {
 			    	InputStream b64is = MimeUtility.decode(bais, "base64");
 			    	
 			    	String str = StreamProcessor.getStringFromInputStream(b64is);
-			    	metoResponse = postOnlyCSV(str);
+			    	metoResponse = postOnlyCSV(str,metaData.getClientId());
 			    	metoResponse.setFilekey(metaData.getFileType());
 	        	}
 	        	else if(metaData.getFileType().equalsIgnoreCase("PDF")){
@@ -135,9 +141,10 @@ public class MetoBusiness {
 		}
 
 		/**
-		 * 
+		 * take the request with set file name and forward to GCSPersistenceService
+		 * to read the file in bucket
 		 * @param request
-		 * @return
+		 * @return stream of pdf file set in MetoResponse object.
 		 */
 		public MetoResponse getDocumentStream(MetoRequest request){
 			return GCSPersistenceService.INSTANCE.getDocumentStream(request);
@@ -150,14 +157,14 @@ public class MetoBusiness {
 		 * @param String
 		 * @return MetoResponse object
 		 */
-	   public MetoResponse postOnlyCSV(String incomingCSV) { 
+	   public MetoResponse postOnlyCSV(String incomingCSV, String clientID) { 
 			
 			logger.info("inside postOnlyCSV method");
 			MetoResponse metoResponse = null;
 			List<MetoDataJPA> metoDataList = new ArrayList<MetoDataJPA>();
 	        try {
-				System.out.println("incomingCSV :" + incomingCSV);  
-				metoDataList = createList(incomingCSV);
+				logger.info("incomingCSV :" + incomingCSV);  
+				metoDataList = createList(incomingCSV,clientID);
 				metoResponse = JPAPersistenceService.INSTANCE.add(metoDataList);
 			} catch (Exception e) {
 				logger.error("error in persisting csv", e);
@@ -175,7 +182,7 @@ public class MetoBusiness {
 		 * 		01072014,SE_ENG,1.0,2.0,3.0
 		 * @return list of MetoDataJPA objects.
 		 */
-		private List<MetoDataJPA> createList(String incomingString){
+		private List<MetoDataJPA> createList(String incomingString, String clientId){
 			String receivedString = incomingString.replaceAll("\\s+","\n");
 			logger.info("inside createList method");
 			List<MetoDataJPA> metoDataList = new ArrayList<MetoDataJPA>();
@@ -184,8 +191,8 @@ public class MetoBusiness {
 			String[] line = receivedString.split("\n");
 			for(String temp:line){
 				String[] split = temp.split(",");
-				Date date = MetoHelper.convertStringIntoDate(split[0], "ddMMyyyy");
-				tmpMetoData = new MetoDataJPA(split[0] + ":" + split[1],date, split[1], split[2], split[3]);
+				Date date = AppHelper.convertStringIntoDate(split[0], "ddMMyyyy");
+				tmpMetoData = new MetoDataJPA(split[0] + ":" + split[1]+":" + clientId,date, split[1], split[2], split[3],clientId);
 				metoDataList.add(tmpMetoData);
 				logger.info("adding csv data to list");
 			}
@@ -194,7 +201,10 @@ public class MetoBusiness {
 		
 		
 	    /**
-	     * 
+	     * convert XML file into java objects
+	     * @param metoFile
+	     * @return MetaData objects
+	     * @throws MessagingException
 	     */
 		private MetaData generateMetadata(IngestionConfiguration metoFile)
 				throws MessagingException {
@@ -205,7 +215,7 @@ public class MetoBusiness {
 			   
 			//converting bytestream into metadata object
 			MetaData metaData = JAXB.unmarshal(b64is, MetaData.class);
-	        System.out.println("MataData XML" + metaData);
+	        logger.debug("MataData XML" + metaData);
 	 
 			return metaData;
 		}	
@@ -228,7 +238,7 @@ public class MetoBusiness {
 	      // String validDate = (metaData.getValidityDate().split("T"))[0];
 	       Date date = metaData.getValidityDate();
 	       
-	       String  validDate = MetoHelper.convertDateIntoString(date);
+	       String  validDate = AppHelper.convertDateIntoString(date);
 		   
 	       key = (clientId + separator + category + separator + validDate + separator + fileType).toLowerCase();
 	       logger.info("The key generated is " + key);
@@ -237,7 +247,7 @@ public class MetoBusiness {
 
 		
 		/**
-		 * 
+		 * create array of string from a string
 		 * @param incomingString
 		 * @return
 		 */
@@ -248,19 +258,19 @@ public class MetoBusiness {
 	
 		
 		/**
-		 * 
+		 * Convert a list into String
 		 * @param list
 		 * @return
 		 */
 		private String createString(List<MetoDataJPA> list) {
 			StringBuffer buff = new StringBuffer();
-			System.out.println("The list is : " + list);
+			logger.debug("The list is : " + list);
 			for (MetoDataJPA obj : list) {
-				System.out.println("Adding " + obj);
+				logger.info("Adding " + obj);
 				buff.append(obj.getStringRepresentation()).append(
 						System.lineSeparator());
 			}
-			System.out.println("The final string is : " + buff.toString());
+			logger.error("The final string is : " + buff.toString());
 			return buff.toString();
 		}
 }

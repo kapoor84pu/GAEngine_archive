@@ -20,16 +20,18 @@ public class MetoDataJPA {
 	private String regions;
 	private String temperature;
 	private String pressure;
+	private String clientId;
 	
 	public MetoDataJPA(){}
 		
 	public MetoDataJPA(String id, Date weatherDate, String regions,
-			String temperature, String pressure) {
+			String temperature, String pressure, String clientId) {
 		this.id = id;
 		this.weatherDate = weatherDate;
 		this.regions = regions;
 		this.temperature = temperature;
 		this.pressure = pressure;
+		this.clientId = clientId;
 	}
 	
 	public String getId() {
@@ -55,24 +57,37 @@ public class MetoDataJPA {
 	public void setTemperature(String temperature) {
 		this.temperature = temperature;
 	}
+	
 	public String getPressure() {
 		return pressure;
 	}
+	
 	public void setPressure(String pressure) {
 		this.pressure = pressure;
 	}
+	
 	public String getRegions() {
 		return regions;
 	}
+	
 	public void setRegions(String regions) {
 		this.regions = regions;
 	}
 	
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	
 	@Override
 	public String toString() {
-		return "MetoDataJPA [id=" + id + ", weatherDate=" + weatherDate + ",regions="
-				+ regions + ", temperature=" + temperature + ", pressure="
-				+ pressure + "]";
+		return "MetoDataJPA [id= " + id + ", weatherDate= " + weatherDate + ",regions= "
+				+ regions + ", temperature= " + temperature + ", pressure= "
+				+ pressure + "clientid= " + clientId +  "]";
 	}
 	
 	public String getStringRepresentation(){

@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<%@page import="uk.co.metoffice.util.MetoHelper"%>
+<%@page import="uk.co.metoffice.util.AppHelper"%>
 <%@page import="uk.co.metoffice.beans.MetaData"%>
 <%@ page import="java.util.List" %>
 
@@ -12,7 +12,15 @@
 	<jsp:include page="common/metadata.jsp" />
 </head>
 
-<%	List<MetaData> list = (List<MetaData>)request.getAttribute("list");	%>
+<%	List<MetaData> list = (List<MetaData>)request.getAttribute("list");
+Cookie[] cookies = request.getCookies();
+		String clientId = null;
+		for(Cookie cookie : cookies){
+			if("RetailPortal".equals(cookie.getName())){
+				clientId = cookie.getValue();
+			}
+		}
+%>
 
 <body id="home">
 	<div id="wrap">
@@ -39,10 +47,12 @@
 							<th>Description</th>
 							<th> </th>			
 						</tr>			
-						<%	for(MetaData temp : list){  
+						<%   if(list!=null){	
+						for(MetaData temp : list){  
 						
-							 String validDate = MetoHelper.convertDateIntoString(temp.getValidityDate());
-							 String url = "/meto/gcs/get/" + temp.getClientId().toLowerCase() + "::" 
+							 String validDate = AppHelper.convertDateIntoString(temp.getValidityDate());
+							 
+							 String url = "/meto/WeatherProduct/save/" + temp.getClientId().toLowerCase() + "::" 
 							 				+ temp.getCategory().toLowerCase() + "::" 
 											+ validDate.toLowerCase() + "::"+temp.getFileType().toLowerCase();
 						%>
@@ -56,7 +66,7 @@
 								</td>
 							</tr>	 
 
-						<% } %>
+						<% } }%>
 					</table>
 				</div>
 

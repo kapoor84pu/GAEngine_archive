@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import uk.co.metoffice.beans.MetoDataJPA;
 import uk.co.metoffice.beans.Regions;
 import uk.co.metoffice.service.JPAPersistenceService;
-import uk.co.metoffice.util.MetoHelper;
+import uk.co.metoffice.util.AppHelper;
 
 /**
  * This class receives parameters from searchHistdata.jsp and returns back a list of MetoDataJPA objects to viewHistdata.jsp
@@ -26,7 +27,10 @@ public class SearchDataJPAServlet extends HttpServlet {
 	private final static Logger logger = LoggerFactory.getLogger(SearchDataJPAServlet.class);
 
 	private static final long serialVersionUID = 1L;
-
+	
+	/**
+	 * TODO : This to be moved to a resource to make it consistent with others.
+	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -35,8 +39,8 @@ public class SearchDataJPAServlet extends HttpServlet {
 		String dateFrom = req.getParameter("fromDate");
 		String dateTo = req.getParameter("toDate");
 		
-		Date fromDate = MetoHelper.convertStringIntoDate(dateFrom);
-		Date toDate = MetoHelper.convertStringIntoDate(dateTo);
+		Date fromDate = AppHelper.convertStringIntoDate(dateFrom);
+		Date toDate = AppHelper.convertStringIntoDate(dateTo);
 		
 		String[] regions = req.getParameterValues("regions");
 		
@@ -45,7 +49,11 @@ public class SearchDataJPAServlet extends HttpServlet {
 			regions = Regions.getAllRegions();
 		}
 		
-		list = JPAPersistenceService.INSTANCE.getWeatherBetweenDates(fromDate, toDate, regions);
+		Cookie[] cookies = req.getCookies();
+		String clientId = AppHelper.verifyCookire(cookies);
+		
+		
+		list = JPAPersistenceService.INSTANCE.getWeatherBetweenDates(fromDate, toDate, regions,clientId);
 		
 		String regionList = null;
 		StringBuilder str = new StringBuilder();

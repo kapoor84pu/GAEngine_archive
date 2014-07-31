@@ -20,8 +20,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
         <session-timeout>30
         </session-timeout>
     </session-config>
-   
-  	<!-- Servlet to search csv historical data -->
+    
+    
+     	<!-- Servlet to search csv historical data -->
     <servlet>
         <servlet-name>getJPA</servlet-name>
         <servlet-class>uk.co.metoffice.servlet.SearchDataJPAServlet</servlet-class>
@@ -30,8 +31,8 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
     	<servlet-name>getJPA</servlet-name>
     	<url-pattern>/getJPA</url-pattern>
   	</servlet-mapping> 
-  		
-    
+  	
+   
     <!-- Google app engine -->
     <servlet>
         <servlet-name>SystemServiceServlet</servlet-name>

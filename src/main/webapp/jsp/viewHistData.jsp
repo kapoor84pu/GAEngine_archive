@@ -12,7 +12,14 @@
 	String fromDate = ((String)request.getAttribute("fromDate")).replaceAll("/", "");
 	String toDate = ((String)request.getAttribute("toDate")).replaceAll("/", "");
 	String regions = (String)request.getAttribute("regionList");  
-	String url = "/meto/WeatherData/" + fromDate + "/" + toDate + "/" + regions;	
+	Cookie[] cookies = request.getCookies();
+		String clientId = null;
+		for(Cookie cookie : cookies){
+			if("RetailPortal".equals(cookie.getName())){
+				clientId = cookie.getValue();
+			}
+		}
+	String url = "/meto/WeatherData/" + fromDate + "/" + toDate + "/" + regions+"/"+clientId;	
 %>
 		
 <body id="home">
@@ -39,7 +46,7 @@
 						<tr>
 							<th>Date</th>
 							<th>Regions</th>
-							<th>Max Temp (°C)</th>
+							<th>Max Temp (ï¿½C)</th>
 							<th>Pressure</th>
 							<th>Max Temp day</th>
 							<th>Min Temp day</th>
