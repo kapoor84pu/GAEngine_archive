@@ -1,31 +1,32 @@
-<div >
+<div>
 	<div ng-controller="DateRangeCtrl">
-		<div class="row">
-			<div class="col-md-1">
-				<label for="fromDate">From:</label>
-				<p class="input-group">
-					<input id="fromDate" type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dates.from" is-open="toDatePopupOpened" min-date="minDate" max-date="'2015-06-22'" ng-required="true" close-text="Close" />
-	              <span class="input-group-btn">
-	                <button type="button" class="btn btn-default" ng-click="showToDateSelect($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-	              </span>
-				</p>
-			</div>
-			<div class="col-md-1">
-				<label for="toDate">To:</label>
-				<p class="input-group">
-						<input id="toDate" ng-model="dates.to" type="text" class="form-control"datepicker-popup="dd-MMMM-yyyy" is-open="fromDatePopupOpened" min-date="minDate" max-date="'2015-06-22'" ng-required="true" close-text="Close" />
-	              <span class="input-group-btn">
-	                <button type="button" class="btn btn-default" ng-click="showFromDateSelect($event)"><i class="glyphicon glyphicon-calendar"></i></button>
-	              </span>
-				</p>
-			</div>
 
+		<div>
+			<label for="fromDate">From:</label>
+
+			<p class="input-group">
+				<input id="fromDate" type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy"
+					   ng-model="dates.from" is-open="toDatePopupOpened" min-date="minDate" max-date="'2015-06-22'"
+					   ng-required="true" close-text="Close"/>
+			  <span class="input-group-btn">
+				<button type="button" class="btn btn-default" ng-click="showToDateSelect($event)"><i
+						class="glyphicon glyphicon-calendar"></i></button>
+			  </span>
+			</p>
 		</div>
 
-		<pre>
-			From     {{dates.from | date:'fullDate'}}
-			to       {{dates.to | date:'fullDate'}}
+		<div>
+			<label for="toDate">To:</label>
 
-		</pre>
+			<p class="input-group">
+				<input id="toDate" ng-model="dates.to" type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy"
+					   is-open="fromDatePopupOpened" min-date="minDate" max-date="'2015-06-22'" ng-required="true"
+					   close-text="Close"/>
+			  <span class="input-group-btn">
+				<button type="button" class="btn btn-default" ng-click="showFromDateSelect($event)"><i
+						class="glyphicon glyphicon-calendar"></i></button>
+			  </span>
+			</p>
+		</div>
 	</div>
 </div>

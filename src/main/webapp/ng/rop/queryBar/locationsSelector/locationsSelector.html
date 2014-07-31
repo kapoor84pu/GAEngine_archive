@@ -1,0 +1,10 @@
+<div>
+	<div ng-controller="LocationsSelectorCtrl">
+		<div ng-repeat="region in regions">
+			<label class="checkbox">
+				<input type="checkbox" id="region-{{region.id}}">
+				{{region.name}}
+			</label>
+		</div>
+	</div>
+</div>

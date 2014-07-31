@@ -1,12 +1,25 @@
-angular.module("queryBar",["datesRangeSelector"])
+angular.module("queryBar",["datesRangeSelector", "locationsSelector"])
 	.controller("QueryBarCtrl",["$scope", function($scope){
 		var ONE_WEEK =  1000 * 60 * 60 * 24 * 7;
 		var NOW = (new Date()).getTime();
 		$scope.dates = {text:"hey", from: new Date(NOW), to: new Date(NOW + ONE_WEEK)};
-		$scope.newDate = function(){
-			$scope.dates.to = new Date($scope.dates.to.getTime() + 1000 * 60 * 60 * 24 * 7);
-			$scope.dates.from = new Date($scope.dates.from.getTime() - 1000 * 60 * 60 * 24 * 7);
+
+		$scope.days = {
+			monday:true,
+			tuesday:true,
+			wednesday:true,
+			thursday:true,
+			friday:true,
+			saturday:false,
+			sunday:false
 		}
+
+	$scope.regions =  [
+		{id:1, name: "London"},
+		{id:2, name: "Leeds"},
+		{id:3, name: "Exeter"}
+	]
+
 	}])
 	.directive("queryBar", function(){
 		return {

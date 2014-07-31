@@ -1,7 +1,7 @@
 
 
 
-angular.module("datesRangeSelector",["ui.bootstrap"])
+angular.module("datesRangeSelector",["ui.bootstrap", "daysSelector"])
 	.controller("DateRangeCtrl", ["$scope", function($scope){
 		$scope.showToDateSelect = function($event) {
 			$event.preventDefault();
