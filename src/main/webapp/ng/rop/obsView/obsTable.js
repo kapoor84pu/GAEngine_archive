@@ -2,7 +2,7 @@ angular.module("obsTable",["models", "ngGrid"])
 	.controller("dataTable",["$scope", "TableData", function($scope, TableData){
 		$scope.TableData = TableData;
 		$scope.columnDefs = [];
-		$scope.gridOptions = {data: 'TableData.data', columnDefs:'columnDefs'};
+		$scope.gridOptions = {data: 'TableData.data', columnDefs:'columnDefs', showGroupPanel: true};
 
 		$scope.$watch('TableData.data', function(newValue, oldValue) {
 			var columnDefs = [];
@@ -20,15 +20,6 @@ angular.module("obsTable",["models", "ngGrid"])
 			}
 			$scope.columnDefs = columnDefs;
 		});
-
-
-		/*$scope.myData = [{name: "Moroni", age: 50},
-			{name: "Tiancum", age: 43},
-			{name: "Jacob", age: 27},
-			{name: "Nephi", age: 29},
-			{name: "Enos", age: 34}];
-
-		$scope.gridOptions = { data: 'myData' };*/
 }])
 	.directive("obsTable", function(){
 		return {
