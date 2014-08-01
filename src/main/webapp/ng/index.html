@@ -4,42 +4,48 @@
 	<title>Test</title>
 </head>
 <body>
-<div class="container">
+<div class="container"  ng-app="ropApp">
 	<div class="row">
-		<div id="queryBar" ng-app="ropApp" class="col-md-2">
+		<div id="queryBar" class="col-md-2">
 			<query-bar></query-bar>
 		</div>
 		<div id="dataArea" class="col-md-10">
-			The data gird goes here...
+
+			<obs-table></obs-table>
+
 		</div>
 	</div>
 </div>
 
-<!--
-<div ng-app="myApplication" ng-controller="DemoController">
-	Some content ...
-	<div my-directive="testing">
-		Some more content ...
-	</div>
-</div>-->
-
-
-<!--
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
--->
+
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+<!--<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">-->
+<link rel="stylesheet" href="css/app.css">
 <!--
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 -->
 
+
+
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
 <script src="ng-ui/ui-bootstrap-tpls-0.11.0.min.js"></script>
+
+
+<!-- ng-table -->
+<link rel="stylesheet" href="ng-grid/ng-grid.min.css">
+<script src="ng-grid/ng-grid-2.0.11.min.js"></script>
+
+
+
 
 <script src="rop/queryBar/queryBar.js"></script>
 <script src="rop/queryBar/datesRangeSelector/datesRangeSelector.js"></script>
 <script src="rop/queryBar/daysSelector/daysSelector.js"></script>
 <script src="rop/queryBar/locationsSelector/locationsSelector.js"></script>
+<script src="rop/model/TableData.js"></script>
+<script src="rop/obsView/obsTable.js"></script>
+<script src="rop/service/obsService.js"></script>
 
 <script src="rop/app.js"></script>
 </body>

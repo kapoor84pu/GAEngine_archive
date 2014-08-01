@@ -1,1 +1,1 @@
-angular.module("ropApp", ["queryBar", "datesRangeSelector"]);
+angular.module("ropApp", ["queryBar", "obsTable"]);
