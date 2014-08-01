@@ -10,7 +10,7 @@
 	// Get Cookies and check if the cookie is present
 
 	// If not
-	Cookie cookie = new Cookie("RetailPortal","1");
+	Cookie cookie = new Cookie("RetailPortal","2");
 	response.addCookie(cookie);
 	
 	//Cookie cookie = new Cookie("RetailPortal","ClientID=2");

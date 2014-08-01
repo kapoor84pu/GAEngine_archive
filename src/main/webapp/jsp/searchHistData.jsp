@@ -24,7 +24,7 @@
 				</div>
 
 				<div class="chapter">
-					<form action="/getJPA" method="post" id="myform">
+					<form action="/meto/WeatherData/All" method="post" id="myform">
 						<div class="base">
 							<div class="leftBase">
 								<table id="tblTest">
