@@ -1,6 +1,11 @@
 package uk.co.metoffice.resource;
 //
-import java.io.InputStream;
+import com.sun.jersey.api.view.Viewable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.co.metoffice.beans.RequestParameter;
+import uk.co.metoffice.business.LogBusiness;
+import uk.co.metoffice.util.Constants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,20 +14,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import uk.co.metoffice.beans.MetoRequest;
-import uk.co.metoffice.business.LogBusiness;
-import uk.co.metoffice.util.Constants;
-
-import com.sun.jersey.api.view.Viewable;
+import java.io.InputStream;
 
 @Path("/Logs")
 public class LogResource {
 	private LogBusiness business = new LogBusiness();
-	MetoRequest request = new MetoRequest();
+	RequestParameter request;
 	private static Logger logger = LoggerFactory.getLogger(LogResource.class);
 	
 	/**
@@ -46,8 +43,9 @@ public class LogResource {
 		logger.debug("Params : " + fromLogDateTime + "," + toLogDateTime + "," + downloadButton);
 
 		try {
-			request.setFromDate(fromLogDateTime);
-			request.setToDate(toLogDateTime);
+      request = new RequestParameter.RequestParameterBuilder().setFromDate(fromLogDateTime).setToDate(toLogDateTime).build();
+//			request.setFromDate(fromLogDateTime);
+//			request.setToDate(toLogDateTime);
 			
 			req.setAttribute("fromLogDateTime", fromLogDateTime);
 			req.setAttribute("toLogDateTime", toLogDateTime);

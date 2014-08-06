@@ -1,17 +1,16 @@
 package uk.co.metoffice.business;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.co.metoffice.beans.RequestParameter;
+import uk.co.metoffice.service.LogService;
+import uk.co.metoffice.util.AppHelper;
+import uk.co.metoffice.util.Constants;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import uk.co.metoffice.beans.MetoRequest;
-import uk.co.metoffice.service.LogService;
-import uk.co.metoffice.util.Constants;
-import uk.co.metoffice.util.AppHelper;
 
 /**
  * This class interact with resource to get parameter and serve through service class.
@@ -24,15 +23,13 @@ public class LogBusiness {
   private final static Logger logger = LoggerFactory.getLogger(LogBusiness.class);
 
   /**
-   * fetch logs as a single string form google cloud
-   *
-   * @param request
-   *
-   * @return
+   * fetch logs as a single string form google logs.
+   * @param request, newLine
+   * @return String
    */
-  public String generateLogString(MetoRequest request, String newLine) {
+  public String generateLogString(RequestParameter request, String newLine) {
 
-    logger.info(Constants.METHOD_START + "generateLogString(MetoRequest, String)");
+    logger.info(Constants.METHOD_START + "generateLogString(RequestParameter, String)");
 
     Date fromDate = AppHelper.convertStringIntoDate(request.getFromDate(), Constants.FORMAT_DATETIME);
     Date toDate = AppHelper.convertStringIntoDate(request.getToDate(), Constants.FORMAT_DATETIME);
@@ -40,19 +37,15 @@ public class LogBusiness {
 
     String str = logService.fetchLogs(fromDate, toDate, newLine);
 
-    logger.info(Constants.METHOD_END + "generateLogString(MetoRequest, String)");
+    logger.info(Constants.METHOD_END + "generateLogString(RequestParameter, String)");
     return str;
   }
 
 
   /**
    * Converts String into ByteArrayInputStream
-   *
-   * @param String
-   *
-   * @return ByteArrayInputStream
-   */
-  public InputStream stringToStream(String str) {
-    return new ByteArrayInputStream(str.getBytes(StandardCharsets.UTF_8));
+    */
+  public InputStream stringToStream(String string) {
+    return new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8));
   }
 }

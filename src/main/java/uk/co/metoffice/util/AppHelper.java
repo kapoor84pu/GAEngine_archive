@@ -1,16 +1,14 @@
 package uk.co.metoffice.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.co.metoffice.service.GCSPersistenceService;
+
+import javax.servlet.http.Cookie;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import javax.servlet.http.Cookie;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import uk.co.metoffice.service.GCSPersistenceService;
 
 /**
  * 
@@ -49,11 +47,11 @@ public class AppHelper {
 	public static String convertDateIntoString(Date date){
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
-		String dates = formatter.format(date);
-		return dates;
+    return formatter.format(date);
 	}
-	//cookie verification 
-	public static String verifyCookire(Cookie[] cookies){
+	//cookie verification
+  //TODO: change in JSP as well
+	public static String verifyCookie(Cookie[] cookies){
 		String clientId = null;
 		for(Cookie cookie : cookies){
 			if("RetailPortal".equals(cookie.getName())){

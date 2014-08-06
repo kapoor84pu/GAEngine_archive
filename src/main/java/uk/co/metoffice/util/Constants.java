@@ -11,4 +11,7 @@ public class Constants {
 	public static final String NEWLINE_HTML_TAG = "<br/>";
 	
 	public static final String FORMAT_DATETIME = "MM/dd/yyyy HH:mm";
+
+  public static final String OUTPUT_HEADER_CSV = "attachment; filename=" + "export.csv";
+
 }

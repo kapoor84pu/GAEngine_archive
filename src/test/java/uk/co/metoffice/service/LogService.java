@@ -1,15 +1,15 @@
 package uk.co.metoffice.service;
 
-import java.util.Calendar;
-import java.util.Date;
-
+import com.google.appengine.api.log.AppLogLine;
+import com.google.appengine.api.log.LogQuery;
+import com.google.appengine.api.log.LogService.LogLevel;
+import com.google.appengine.api.log.LogServiceFactory;
+import com.google.appengine.api.log.RequestLogs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.appengine.api.log.AppLogLine;
-import com.google.appengine.api.log.LogQuery;
-import com.google.appengine.api.log.LogServiceFactory;
-import com.google.appengine.api.log.RequestLogs;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * A service class interact with google cloud and fetch logs in between the provided dates.
@@ -34,10 +34,16 @@ public class LogService {
 		StringBuffer buff = new StringBuffer();
 		
 		try {
-			LogQuery query = LogQuery.Builder.withStartTimeMillis(fromDate.getTime()).endTimeMillis(toDate.getTime());
+			LogQuery query = LogQuery.Builder
+                        .withStartTimeMillis(fromDate.getTime())
+                        .endTimeMillis(toDate.getTime())
+                        .batchSize(30)
+                        .minLogLevel(LogLevel.ERROR);
 			query.includeAppLogs(true);
-			
-			for (RequestLogs record : LogServiceFactory.getLogService().fetch(query)) {
+
+      Iterable<RequestLogs>  requestLogs = LogServiceFactory.getLogService().fetch(query);
+
+			for (RequestLogs record : requestLogs) {
 			     buff.append(newline);
 			      Calendar cal = Calendar.getInstance();
 			      cal.setTimeInMillis(record.getStartTimeUsec() / 1000);

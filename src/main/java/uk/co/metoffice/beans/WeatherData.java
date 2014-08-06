@@ -1,9 +1,8 @@
 package uk.co.metoffice.beans;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * This class contains all weather data
@@ -12,7 +11,7 @@ import javax.persistence.Id;
  */
 
 @Entity
-public class MetoDataJPA {
+public class WeatherData {
 
 	@Id	
 	private String id;
@@ -22,10 +21,10 @@ public class MetoDataJPA {
 	private String pressure;
 	private String clientId;
 	
-	public MetoDataJPA(){}
+	public WeatherData(){}
 		
-	public MetoDataJPA(String id, Date weatherDate, String regions,
-			String temperature, String pressure, String clientId) {
+	public WeatherData(String id, Date weatherDate, String regions,
+                     String temperature, String pressure, String clientId) {
 		this.id = id;
 		this.weatherDate = weatherDate;
 		this.regions = regions;
@@ -85,7 +84,7 @@ public class MetoDataJPA {
 	
 	@Override
 	public String toString() {
-		return "MetoDataJPA [id= " + id + ", weatherDate= " + weatherDate + ",regions= "
+		return "WeatherData [id= " + id + ", weatherDate= " + weatherDate + ",regions= "
 				+ regions + ", temperature= " + temperature + ", pressure= "
 				+ pressure + "clientid= " + clientId +  "]";
 	}

@@ -1,32 +1,23 @@
 package uk.co.metoffice.resource;
 
-import java.util.List;
-
-import javax.mail.MessagingException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
+import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import uk.co.metoffice.beans.MetaData;
-import uk.co.metoffice.beans.MetoRequest;
-import uk.co.metoffice.beans.MetoResponse;
+import uk.co.metoffice.beans.ResponseParameter;
+import uk.co.metoffice.beans.RequestParameter;
 import uk.co.metoffice.business.MetoBusiness;
 import uk.co.metoffice.util.AppHelper;
 
-import com.sun.jersey.api.view.Viewable;
-
+import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import java.util.List;
 
 @Path("/WeatherProduct")
 public class ProductResource {
@@ -35,7 +26,8 @@ public class ProductResource {
 	private MetoBusiness business = new MetoBusiness();
 	
 	/**
-	 * http://<DOMAIN>/meto/Weatherdata/Products/ddmmyyyy/ddmmyyyy/id1-id2-id3
+	 * List the products between fromDate to toDate for a clientId
+   * http://<DOMAIN>/meto/Weatherdata/Products/ddmmyyyy/ddmmyyyy/id1-id2-id3
 	 */
 	@POST
 	@Path("/All")
@@ -44,52 +36,59 @@ public class ProductResource {
 			@FormParam("fromDate") String fromDate,
 			@FormParam("toDate") String toDate) {
 		
-		List<MetaData> list = null;
-		MetoResponse metoResponse = null;
+		List<MetaData> list;
+		ResponseParameter responseParameter;
 		Cookie[] cookie = req.getCookies();
-		String clientId = AppHelper.verifyCookire(cookie);
+		String clientId = AppHelper.verifyCookie(cookie);
 		
 
-		MetoRequest request = new MetoRequest(fromDate, toDate, null, clientId);
+		RequestParameter request = new RequestParameter.RequestParameterBuilder()
+                                  .setFromDate(fromDate)
+                                  .setToDate(toDate)
+                                  .setClientId(clientId)
+                                  .build();
 		
 		logger.info("invoking get method of /WeatherData/Products/fromDate/toDate");
 		logger.debug("printing fromDate and toDate" + fromDate + toDate);
 
 		try {
-			metoResponse = business.getHistoProduct(request);
-			list = metoResponse.getMetaDataList();
+			responseParameter = business.getHistoricalProduct(request);
+			list = responseParameter.getMetaDataList();
 			req.setAttribute("list", list);
 		} 
 		catch (Exception ex) {
 			logger.error("error while fetching products list",ex);
 		}
 
-		return new Viewable("/jsp/viewHistProduct.jsp");
+		return new Viewable("/jsp/viewHistoricalProduct.jsp");
 	}
 	
 	  /**
 	   * Retrieves a file from GCS and returns it in the http response.
-	   * If a get comes in for request path /gcs/bucke/filename this will be interpreted as
-	   * a request to read the GCS file named filename in the bucket bucke.
+	   * If a get comes in for request path /gcs/bucketName/filename this will be interpreted as
+	   * a request to read the GCS file named filename in the bucket bucketName.
 	   * @throws MessagingException 
 	   */
 		@GET
-	    @Path("save/{filename}")
+	  @Path("save/{filename}")
 		@Produces("application/pdf")
 		public Response doGet(@PathParam("filename") String filename) throws MessagingException {
 			ResponseBuilder builder = null;
-			MetoRequest request = new MetoRequest();
-			MetoResponse metoResponse = new MetoResponse();
+			RequestParameter request;
+			ResponseParameter responseParameter;
 			logger.info("looking for " + filename + " in Google Cloud Storage bucket");
 			
 			try{
-				request.setFilename(filename);
-				//set file name in request and sendover to business class.
-				metoResponse = business.getDocumentStream(request);
+        request = new RequestParameter.RequestParameterBuilder()
+                      .setFilename(filename)
+                      .build();
+
+				//set file name in request and send over to business class.
+				responseParameter = business.getDocumentStream(request);
 				
-				if (metoResponse != null && metoResponse.getStream() != null){
-					builder = Response.ok((Object)metoResponse.getStream());
-					builder.header("Content-Disposition", "attachment; filename=" + filename+ ".pdf");	
+				if (responseParameter != null && responseParameter.getStream() != null){
+					builder = Response.ok(responseParameter.getStream())
+                             .header("Content-Disposition", "attachment; filename=" + filename + ".pdf");
 				}else{
 					//TODO : Send error
 				}

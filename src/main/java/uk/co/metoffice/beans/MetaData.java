@@ -1,13 +1,17 @@
 package uk.co.metoffice.beans;
 
-import java.util.Date;
+import uk.co.metoffice.util.DateAdapter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Date;
 
-import uk.co.metoffice.util.DateAdapter;
+/**
+ * Class contains metadata of product files stored in bucket.
+ * neelam.kapoor
+ */
 
 @Entity
 public class MetaData {
@@ -63,7 +67,13 @@ public class MetaData {
 	public void setValidityDate(Date validityDate) {
 		this.validityDate = validityDate;
 	}
-	
+
+  public String createCompositeKey(String clientId, String category, String validDate, String fileType){
+    String separator = "::";
+    String key = (clientId + separator + category + separator + validDate + separator + fileType).toLowerCase();
+    return key;
+  }
+
 	@Override
 	public String toString() {
 		return "MetaData [id=" + id + ", clientId=" + clientId + ", fileType="
