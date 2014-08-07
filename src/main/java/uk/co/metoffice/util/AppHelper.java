@@ -1,5 +1,6 @@
 package uk.co.metoffice.util;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.metoffice.service.GCSPersistenceService;
@@ -60,6 +61,15 @@ public class AppHelper {
 		}
 		return clientId;
 	}
+
+  public static String getDay(Date date){
+    DateTime dt = new DateTime();
+    dt = new DateTime(date);
+
+    String day = dt.dayOfWeek().getAsText();
+    return day;
+
+  }
 	
 
 }

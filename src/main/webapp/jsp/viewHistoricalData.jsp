@@ -18,7 +18,7 @@
         <c:set var="clientId" value="${aCookie.value}"/>
       </c:if>
     </c-rt:forEach>
-    <c:set var="url" value="/meto/WeatherData/${requestScope.fromDate}/${requestScope.toDate}/${requestScope.regionList}/${clientId}" scope="application"/>
+    <c:set var="url" value="/meto/WeatherData/${requestScope.fromDate}/${requestScope.toDate}/${requestScope.regionList}/${requestScope.dayList}/${clientId}" />
 
     <div id="wrap">
       <jsp:include page="common/header.jsp" />
@@ -53,11 +53,12 @@
               </tr>
               <c:forEach items="${requestScope.list}" var="i">
                 <tr>
-                  <td><c:out value="${i.weatherDate}"></c:out>
-                  <td><c:out value="${i.regions}"></c:out>
-                  <td><c:out value="${i.temperature}"></c:out>
-                  <td><c:out value="${i.pressure }"></c:out>
-                  <td> </td>	<td> </td> 	<td> </td> <td> </td>		<td> </td>	<td> </td>
+                  <td><c:out value="${i.weatherDate}"></c:out> </td>
+                  <td><c:out value="${i.regions}"></c:out></td>
+                  <td><c:out value="${i.temperature}"></c:out></td>
+                  <td><c:out value="${i.pressure }"></c:out></td>
+                  <td> <c:out value="${i.day }"> </c:out></td>
+                  <td> </td> 	<td> </td> <td> </td>		<td> </td>	<td> </td>
                 </tr>
               </c:forEach>
             </table>

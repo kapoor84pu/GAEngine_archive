@@ -17,6 +17,7 @@ public class RequestParameter {
 	private IngestionConfiguration ingestionConfiguration;
 	private MetaData metaData;
 	private String clientId;
+  private String day;
 
   public RequestParameter(RequestParameterBuilder requestParameterBuilder) {
     this.filename = requestParameterBuilder.filename;
@@ -26,6 +27,7 @@ public class RequestParameter {
     this.ingestionConfiguration = requestParameterBuilder.ingestionConfiguration;
     this.metaData = requestParameterBuilder.metaData;
     this.clientId = requestParameterBuilder.clientId;
+    this.day = requestParameterBuilder.day;
   }
 
   public String getFromDate() {
@@ -56,6 +58,10 @@ public class RequestParameter {
 		return clientId;
 	}
 
+  public String getday() {
+    return day;
+  }
+
   public static class RequestParameterBuilder {
     private String filename;
     private String fromDate;
@@ -64,13 +70,14 @@ public class RequestParameter {
     private IngestionConfiguration ingestionConfiguration;
     private MetaData metaData;
     private String clientId;
+    private String day;
 
     public RequestParameterBuilder(){
 
     }
     public RequestParameterBuilder(String filename, String fromDate,
                                    String toDate, String region, IngestionConfiguration ingestionConfiguration,
-                                   MetaData metaData, String clientId) {
+                                   MetaData metaData, String clientId, String day) {
       this.filename = filename;
       this.fromDate = fromDate;
       this.toDate = toDate;
@@ -78,6 +85,7 @@ public class RequestParameter {
       this.ingestionConfiguration = ingestionConfiguration;
       this.metaData = metaData;
       this.clientId = clientId;
+      this.day = day;
     }
 
     public RequestParameterBuilder setFilename(String filename) {
@@ -111,6 +119,11 @@ public class RequestParameter {
 
     public RequestParameterBuilder setClientId(String clientId) {
       this.clientId = clientId;
+      return this;
+    }
+
+    public RequestParameterBuilder setDay(String day) {
+      this.day = day;
       return this;
     }
 

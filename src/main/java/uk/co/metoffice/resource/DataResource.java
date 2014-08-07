@@ -3,10 +3,7 @@ package uk.co.metoffice.resource;
 import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.metoffice.beans.Regions;
-import uk.co.metoffice.beans.RequestParameter;
-import uk.co.metoffice.beans.ResponseParameter;
-import uk.co.metoffice.beans.WeatherData;
+import uk.co.metoffice.beans.*;
 import uk.co.metoffice.business.MetoBusiness;
 import uk.co.metoffice.service.JPAPersistenceService;
 import uk.co.metoffice.util.AppHelper;
@@ -17,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
 import java.util.Date;
@@ -44,18 +42,25 @@ public class DataResource {
    * @return
    */
   @GET
-  @Path("/{fromDate}/{toDate}/{regions}/{clientId}")
+  @Path("/{fromDate}/{toDate}/{regions}/{day}/{clientId}")
   @Produces("text/plain")
   public Response getHistoricalData(@PathParam("fromDate") String fromDate,
                                     @PathParam("toDate") String toDate,
                                     @PathParam("regions") String regions,
+                                    @PathParam("day") String day,
                                     @PathParam("clientId") String clientId)
   {
     InputStream is = null;
 
     try {
       logger.debug("FromDate: '{}',  toDate: '{}', regions: '{}' for client: '{}'", fromDate, toDate, regions, clientId);
-      RequestParameter request = new RequestParameter.RequestParameterBuilder().setFromDate(fromDate).setToDate(toDate).setRegion(regions).setClientId(clientId).build();
+      RequestParameter request = new RequestParameter.RequestParameterBuilder()
+                                                      .setFromDate(fromDate)
+                                                      .setToDate(toDate)
+                                                      .setRegion(regions)
+                                                      .setClientId(clientId)
+                                                      .setDay(day)
+                                                      .build();
       ResponseParameter responseParameter = business.getHistoricalData(request);
       is = responseParameter.getStream();
     } catch (Exception ex) {
@@ -67,49 +72,67 @@ public class DataResource {
 
   /**
    * http://<DOMAIN>/meto/Weatherdata/ddmmyyyy/ddmmyyyy/id1-id2-id3
+   * show all CSV data between two dates.
    */
   @POST
   @Path("/All")
+  @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
   public Viewable getCSVDataList(@Context HttpServletRequest req,
                                  @Context HttpServletResponse resp,
                                  @FormParam("fromDate") String fromDate,
                                  @FormParam("toDate") String toDate,
+                                 @FormParam("day") List<String> day,
                                  @FormParam("regions") List<String> regions) {
 
     logger.info("invoking post method in DataResource");
     List<WeatherData> list;
     String regionList;
+    String dayList;
     Date dateFrom;
     Date dateTo;
     String clientId;
     StringBuilder str = new StringBuilder();
+    StringBuilder dayString = new StringBuilder();
     JPAPersistenceService jpaPersistenceService = new JPAPersistenceService();
     Cookie[] cookies = req.getCookies();
 
     try {
       dateFrom = AppHelper.convertStringIntoDate(fromDate);
       dateTo = AppHelper.convertStringIntoDate(toDate);
+      
       //if region is not present, persistWeatherData all the regions by default
-      if (regions == null) {
+      if (regions.isEmpty()) {
         regions = Regions.getAllRegions();
       }
 
+      if (day.isEmpty()) {
+        day = AllDays.getAllDays();
+      }
       clientId = AppHelper.verifyCookie(cookies);
 
-      list = jpaPersistenceService.getWeatherDataBetweenDates(dateFrom, dateTo, regions, clientId);
+      list = jpaPersistenceService.getWeatherDataBetweenDates(dateFrom, dateTo, regions, clientId, day);
 
       for (String temp : regions) {
         str.append(temp);
         str.append("-");
       }
 
+      for (String tempDay : day) {
+        dayString.append(tempDay);
+        dayString.append("-");
+      }
+
+
+
       regionList = str.toString();
+      dayList = dayString.toString();
 
       logger.debug("list of regions" + regionList);
 
       req.setAttribute("fromDate", fromDate.replaceAll("/", ""));
       req.setAttribute("toDate", toDate.replaceAll("/", ""));
       req.setAttribute("regionList", regionList);
+      req.setAttribute("dayList", dayList);
       req.setAttribute("list", list);
 
       logger.debug("printing retrieved list" + list.toString());

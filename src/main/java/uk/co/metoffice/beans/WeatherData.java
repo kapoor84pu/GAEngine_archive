@@ -16,6 +16,7 @@ public class WeatherData {
 	@Id	
 	private String id;
 	private Date weatherDate;
+  private String day;
 	private String regions;
 	private String temperature;
 	private String pressure;
@@ -23,10 +24,11 @@ public class WeatherData {
 	
 	public WeatherData(){}
 		
-	public WeatherData(String id, Date weatherDate, String regions,
+	public WeatherData(String id, Date weatherDate, String day, String regions,
                      String temperature, String pressure, String clientId) {
 		this.id = id;
 		this.weatherDate = weatherDate;
+    this.day = day;
 		this.regions = regions;
 		this.temperature = temperature;
 		this.pressure = pressure;
@@ -49,7 +51,15 @@ public class WeatherData {
 		this.weatherDate = weatherDate;
 	}
 
-	public String getTemperature() {
+  public String getDay() {
+    return day;
+  }
+
+  public void setDay(String day) {
+    this.day = day;
+  }
+
+  public String getTemperature() {
 		return temperature;
 	}
 	
@@ -84,9 +94,9 @@ public class WeatherData {
 	
 	@Override
 	public String toString() {
-		return "WeatherData [id= " + id + ", weatherDate= " + weatherDate + ",regions= "
-				+ regions + ", temperature= " + temperature + ", pressure= "
-				+ pressure + "clientid= " + clientId +  "]";
+		return "WeatherData [id= " + id + ", weatherDate= " + weatherDate + ",day= "
+				+ day + ",regions= " + regions + ", temperature= " + temperature + ", pressure= "
+				+ pressure + "clientId= " + clientId +  "]";
 	}
 	
 	public String getStringRepresentation(){

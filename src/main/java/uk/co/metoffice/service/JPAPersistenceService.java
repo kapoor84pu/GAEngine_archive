@@ -78,30 +78,33 @@ public class JPAPersistenceService {
 	 * @return list of WeatherData objects
 	 */
 	@SuppressWarnings({ "unchecked" })
-	public List<WeatherData> getWeatherDataBetweenDates(Date fromDate, Date toDate, List<String> regions, String clientId){
+	public List<WeatherData> getWeatherDataBetweenDates(Date fromDate, Date toDate, List<String> regions, String clientId, List<String> day){
 		List<WeatherData> list = Lists.newArrayList();
-		
-		logger.info("received fromDate: " + fromDate + " toDate " + toDate + "and Regions" + regions);
+
+		logger.info("received fromDate: " + fromDate + " toDate " + toDate + "and Regions" + regions + day);
 		
 		for(String reg: regions){
 			if (!reg.equals("")){
-			EntityManager em = EMF.get().createEntityManager();
-			try {
-				Query query = em.createQuery("SELECT m FROM WeatherData m WHERE m.weatherDate BETWEEN :startDate AND :endDate	" +
-                                                                   "AND m.regions = :locations " +
-                                                                   "AND m.clientId = :clientID " +
-                                                                   "ORDER BY m.regions");
-				query.setParameter("locations", reg);
-				query.setParameter("startDate", fromDate);
-				query.setParameter("endDate", toDate);
-				query.setParameter("clientID", clientId);
-				
-				list.addAll(query.getResultList());
-				logger.info("for query " + query.toString() + "result list is " + list.toString());
-			}finally{
-				em.close();
-			}
-			}
+        for(String tempDay: day){
+          EntityManager em = EMF.get().createEntityManager();
+          try {
+            Query query = em.createQuery("SELECT m FROM WeatherData m WHERE m.weatherDate BETWEEN :startDate AND :endDate	" +
+                 "AND m.regions = :locations " +
+                 "AND m.clientId = :clientID " +
+                 "AND m.day = :weekDay ");
+            query.setParameter("locations", reg);
+            query.setParameter("startDate", fromDate);
+            query.setParameter("endDate", toDate);
+            query.setParameter("clientID", clientId);
+            query.setParameter("weekDay", tempDay);
+
+            list.addAll(query.getResultList());
+            logger.info("for query " + query.toString() + "result list is " + list.toString());
+          }finally{
+            em.close();
+          }
+			  }
+      }
 		}
 		return list;
 	}

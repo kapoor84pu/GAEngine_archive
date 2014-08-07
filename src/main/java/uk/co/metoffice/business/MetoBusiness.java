@@ -79,8 +79,9 @@ public class MetoBusiness {
 				Date dateFrom = AppHelper.convertStringIntoDate(request.getFromDate(), "yyyyMMdd");
 				Date dateTo = AppHelper.convertStringIntoDate(request.getToDate(), "yyyyMMdd");
 				String clientId = request.getClientId();
+        String[] day = createStringArray(request.getday());
 
-				list = jpaPersistenceService.getWeatherDataBetweenDates(dateFrom, dateTo, Arrays.asList(region), clientId);
+				list = jpaPersistenceService.getWeatherDataBetweenDates(dateFrom, dateTo, Arrays.asList(region), clientId, Arrays.asList(day));
 				
 				logger.debug("printing fromDate and toDate after conversion" + dateFrom + dateTo);
 				logger.debug("list of entries between two dates is" + list.toString());
@@ -192,7 +193,9 @@ public class MetoBusiness {
 			for(String temp:line){
 				String[] split = temp.split(",");
 				Date date = AppHelper.convertStringIntoDate(split[0], "ddMMyyyy");
-				tempdata = new WeatherData(split[0] + ":" + split[1]+":" + clientId,date, split[1], split[2], split[3],clientId);
+
+        String day =  AppHelper.getDay(date);
+				tempdata = new WeatherData(split[0] + ":" + split[1]+":" + clientId, date, day, split[1], split[2], split[3],clientId);
 				list.add(tempdata);
 				logger.info("adding csv data to list");
 			}
@@ -249,8 +252,8 @@ public class MetoBusiness {
 		 * create array of string from a string
 		 */
 		private String[] createStringArray(String incomingString) {
-			String[] regions = incomingString.split("-");
-			return regions;
+			String[] stringArray = incomingString.split("-");
+			return stringArray;
 		}
 	
 		
