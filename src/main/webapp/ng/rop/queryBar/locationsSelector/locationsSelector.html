@@ -1,7 +1,7 @@
 <div>
 	<div ng-controller="LocationsSelectorCtrl">
 		<label>Regions:</label>
-		<div  class="inputGroup" id="regionsAvaliable" ng-repeat="region in regions">
+		<div  class="inputGroup" id="regionsAvailable" ng-repeat="region in regions">
 			<label class="checkbox">
 				<input type="checkbox" id="region-{{region.id}}" ng-model="region.selected">
 				{{region.name}}

@@ -12,17 +12,17 @@ angular.module("queryBar",["datesRangeSelector", "locationsSelector", "obsServic
 			friday:true,
 			saturday:false,
 			sunday:false
-		}
+		};
 
 		$scope.regions =  [
 			{id:1, name: "London"},
 			{id:2, name: "Leeds"},
 			{id:3, name: "Exeter"}
-		]
+		];
 
 		$scope.submit = function(){
 			obsService.getObs($scope.parsedData());
-		}
+		};
 
 		$scope.parsedData = function(){
 			var selectedDays = [];
@@ -54,6 +54,7 @@ angular.module("queryBar",["datesRangeSelector", "locationsSelector", "obsServic
 		return {
 			templateUrl:"rop/queryBar/queryBar.html",
 			restrict:"E",
-			replace: true
+			replace: true,
+			scope:{}
 		}
-	})
+	});

@@ -26,4 +26,4 @@ angular.module("datesRangeSelector",["ui.bootstrap", "daysSelector"])
 				dates:'='
 			}
 		}
-	})
+	});

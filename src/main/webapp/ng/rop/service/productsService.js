@@ -1,19 +1,15 @@
-angular.module("obsService", ["models"])
+angular.module("productsService", ["models"])
 .service(
-	"obsService",
-	["$http", "$q", "$filter", "TableData", function($http, $q, $filter, TableData){
-		return { getObs:getObs };
+	"productsService",
+	["$http", "$q", "$filter", "ProductsData", function($http, $q, $filter, ProductsData){
+		return {getObs:getObs};
 
 		function getObs(data){
 			var DATE_FORMAT = "ddMMyy";
-			var url = "/meto/WeatherData";
-			var regions = [];
-			for(var i=0; i< data.regions.length; i++){
-				regions.push(data.regions[i].id);
-			}
+			var url = "/meto/products";
+
 			url += '/' + $filter("date")(data.from, DATE_FORMAT);
 			url += "/" + $filter("date")(data.to, DATE_FORMAT);
-			url += "/" + regions.join('-');
 			var request = $http({
 				method:"get",
 				url:url
@@ -29,12 +25,12 @@ angular.module("obsService", ["models"])
 					item['date'] = strToDate(item['date']);
 				}
 			}
-			TableData.data = response.data;
-			return TableData.data;
+			ProductsData.data = response.data;
+			return ProductsData.data;
 		}
 
 		function handleError(){
-			return $q.reject("Unknown error in obsService");
+			return $q.reject("Unknown error in tableService");
 		}
 
 		function strToDate(str){

@@ -8,36 +8,23 @@
 <header class="container">
 	<nav>
 		<ul>
+			<li><a href="#/historical-data" title="Historical data">Historical data</a></li>
+			<li><a href="#/my-products" title="My Products">My Products</a></li>
 			<li><a href="/MyAccount" title="My account">My account</a></li>
 			<li><a href="/ougout" title="Log out">Log out</a></li>
 		</ul>
 	</nav>
-	<hgroup>
+	<div>
 		<h1><a href="http://www.metoffice.gov.uk"><img alt="Met Office" src="../img/MOlogosmall.jpg" /></a></h1>
 		<h2>Retail Portal</h2>
-	</hgroup>
+	</div>
 </header>
 
 
-
-
-
-
-
-
-
 <div class="container"  ng-app="ropApp">
-	<div class="row">
-		<div class="col-lg-2 col-md-2" id="queryBar" class="col-lg-10 col-md-10">
-			<query-bar></query-bar>
-		</div>
-		<div id="dataArea" class="col-md-10">
-
-			<obs-table></obs-table>
-
-		</div>
-	</div>
+	<div ng-view></div>
 </div>
+
 
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 
@@ -51,6 +38,8 @@
 
 
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.1/angular-route.min.js"></script>
+
 <script src="ng-ui/ui-bootstrap-tpls-0.11.0.min.js"></script>
 
 
@@ -65,9 +54,13 @@
 <script src="rop/queryBar/datesRangeSelector/datesRangeSelector.js"></script>
 <script src="rop/queryBar/daysSelector/daysSelector.js"></script>
 <script src="rop/queryBar/locationsSelector/locationsSelector.js"></script>
-<script src="rop/model/TableData.js"></script>
+<script src="rop/model/models.js"></script>
 <script src="rop/obsView/obsTable.js"></script>
 <script src="rop/service/obsService.js"></script>
+<script src="rop/service/productsService.js"></script>
+<script src="rop/views/historicData.js"></script>
+<script src="rop/views/products.js"></script>
+<script src="rop/productsTable/productsTable.js"></script>
 
 <script src="rop/app.js"></script>
 </body>

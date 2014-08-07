@@ -10,4 +10,4 @@ angular.module("daysSelector",["ui.bootstrap"])
 				days:'='
 			}
 		}
-	})
+	});
