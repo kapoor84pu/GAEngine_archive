@@ -1,9 +1,11 @@
 package uk.co.metoffice.beans;
 
-import java.util.Date;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * This class contains all weather data
@@ -12,26 +14,43 @@ import javax.persistence.Id;
  */
 
 @Entity
-public class MetoDataJPA {
+public class WeatherData {
 
-	@Id	
+	@Id
+  @JsonIgnore
 	private String id;
+
+  @JsonProperty
 	private Date weatherDate;
+
+  @JsonProperty
+  private String day;
+
+  @JsonProperty
 	private String regions;
+
+  @JsonProperty
 	private String temperature;
+
+  @JsonProperty
 	private String pressure;
+
+  @JsonIgnore
+	private String clientId;
 	
-	public MetoDataJPA(){}
+	public WeatherData(){}
 		
-	public MetoDataJPA(String id, Date weatherDate, String regions,
-			String temperature, String pressure) {
+	public WeatherData(String id, Date weatherDate, String day, String regions,
+                     String temperature, String pressure, String clientId) {
 		this.id = id;
 		this.weatherDate = weatherDate;
+    this.day = day;
 		this.regions = regions;
 		this.temperature = temperature;
 		this.pressure = pressure;
+		this.clientId = clientId;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -48,34 +67,56 @@ public class MetoDataJPA {
 		this.weatherDate = weatherDate;
 	}
 
-	public String getTemperature() {
+  public String getDay() {
+    return day;
+  }
+
+  public void setDay(String day) {
+    this.day = day;
+  }
+
+  public String getTemperature() {
 		return temperature;
 	}
 	
 	public void setTemperature(String temperature) {
 		this.temperature = temperature;
 	}
+	
 	public String getPressure() {
 		return pressure;
 	}
+	
 	public void setPressure(String pressure) {
 		this.pressure = pressure;
 	}
+	
 	public String getRegions() {
 		return regions;
 	}
+	
 	public void setRegions(String regions) {
 		this.regions = regions;
 	}
 	
+	public String getClientId() {
+		return clientId;
+	}
+
+	public void setClientId(String clientId) {
+		this.clientId = clientId;
+	}
+
+	
 	@Override
 	public String toString() {
-		return "MetoDataJPA [id=" + id + ", weatherDate=" + weatherDate + ",regions="
-				+ regions + ", temperature=" + temperature + ", pressure="
-				+ pressure + "]";
+		return "WeatherData [id= " + id + ", weatherDate= " + weatherDate + ",day= "
+				+ day + ",regions= " + regions + ", temperature= " + temperature + ", pressure= "
+				+ pressure + "clientId= " + clientId +  "]";
 	}
-	
-	public String getStringRepresentation(){
+
+  @JsonIgnore
+  public String getStringRepresentation(){
 		return this.getWeatherDate()+","+this.getRegions()+","+this.getTemperature()+","+this.getPressure() + "\n";
 	}
     

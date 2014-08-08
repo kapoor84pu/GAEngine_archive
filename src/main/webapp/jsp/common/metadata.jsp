@@ -22,5 +22,5 @@
 	<script src="../../js/jquery.min.js" type="text/javascript"></script>
 	<script src="../../js/jquery-ui.min.js" type="text/javascript"></script> 
 	<script src="../../js/meto-core.js" type="text/javascript"></script>
-
+	<script src="../../js/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 	

@@ -24,7 +24,7 @@
 				</div>
 
 				<div class="chapter">
-					<form action="/getJPA" method="post" id="myform">
+					<form action="/meto/WeatherData/All" method="post" id="myform">
 						<div class="base">
 							<div class="leftBase">
 								<table id="tblTest">
@@ -36,8 +36,18 @@
 										 <td>To Date : </td>
 										 <td><input type="text" id="toDate" value="" name="toDate"  /></td>
 									 </tr>
+									 <tr>
+                     <div>
+                       <input type="checkbox" name="day" value="Monday">Monday</input><br/>
+                       <input type="checkbox" name="day" value="Tuesday">Tuesday</input><br/>
+                       <input type="checkbox" name="day" value="Wednesday">Wednesday</input><br/>
+                       <input type="checkbox" name="day" value="Thursday">Thursday</input><br/>
+                       <input type="checkbox" name="day" value="Friday">Friday</input><br/>
+                     </div>
+                   </tr>
 								</table>
 							</div>
+
 							<div class="rightBase">
 								<input type="checkbox" value="ALL" onclick="checkedAll();">All Regions </input> <br/>
 								<input type="checkbox" name="regions" value="LON">London</input><br/>

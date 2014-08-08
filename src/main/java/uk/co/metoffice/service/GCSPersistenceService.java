@@ -1,5 +1,13 @@
 package uk.co.metoffice.service;
 
+import com.google.appengine.tools.cloudstorage.*;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import uk.co.metoffice.beans.ResponseParameter;
+import uk.co.metoffice.beans.RequestParameter;
+
+import javax.mail.internet.MimeUtility;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,32 +15,14 @@ import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
 
-import javax.mail.internet.MimeUtility;
-
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import uk.co.metoffice.beans.MetoRequest;
-import uk.co.metoffice.beans.MetoResponse;
-
-import com.google.appengine.tools.cloudstorage.GcsFileOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.appengine.tools.cloudstorage.GcsInputChannel;
-import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
-import com.google.appengine.tools.cloudstorage.GcsService;
-import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
-import com.google.appengine.tools.cloudstorage.RetryParams;
-
-public enum GCSPersistenceService {
-	INSTANCE;
+public class GCSPersistenceService {
 	private final static Logger logger = LoggerFactory.getLogger(GCSPersistenceService.class);
 	
 	
 	public static final String ENDPOINT = "gcs";
 	public static final String ENDPOINT_BASE = "/gcs/";
 	public static final String BUCKET = "retailportal-dev.appspot.com";
-	public static final boolean SERVE_USING_BLOBSTORE_API = false;
+//	public static final boolean SERVE_USING_BLOBSTORE_API = false;
 	private static final int BUFFER_SIZE = 2 * 1024 * 1024; //2Mb
   
   /**
@@ -47,63 +37,68 @@ public enum GCSPersistenceService {
 	
    
   	/**
-  	 * This method persits Base64 encoded data into Google cloud service buckets as
+  	 * This method persists Base64 encoded data into Google cloud service buckets as
   	 * --
-  	 * @param filekey
+  	 * @param fileKey
   	 * @param encodedData
-  	 * @return MetoResponse
+  	 * @return ResponseParameter
   	 */
-  	public MetoResponse uploadDocumentStream(String filekey, String encodedData){
-    	GcsOutputChannel outputChannel = null;
-  		MetoResponse metoResponse = new MetoResponse();
+  	public ResponseParameter uploadDocumentStream(String fileKey, String encodedData){
+    	GcsOutputChannel outputChannel;
+  		ResponseParameter responseParameter = new ResponseParameter();
 		try {
-	        logger.info("Putting for the file : " + ENDPOINT_BASE + BUCKET + "/" + filekey);
+	        logger.info("Putting for the file : " + ENDPOINT_BASE + BUCKET + "/" + fileKey);
 			
 	        //open output channel to write object using GcsFileOptions, a container class for creating Google storage files
-	        outputChannel = gcsService.createOrReplace(getFileName(ENDPOINT_BASE + BUCKET + "/" + filekey),  GcsFileOptions.getDefaultInstance());
-	        //convert String into byte stream and write it in bucket
+	        outputChannel = gcsService.createOrReplace(getFileName(ENDPOINT_BASE + BUCKET + "/" + fileKey),  GcsFileOptions.getDefaultInstance());
+	        //convert String into byte stream 
 	        InputStream stream = new ByteArrayInputStream(encodedData.getBytes(StandardCharsets.UTF_8));
+	        // write it in bucket
 	        copy(stream, Channels.newOutputStream(outputChannel));
-	        metoResponse.setFilekey(filekey);
-						
+          responseParameter = new ResponseParameter.ResponseParameterBuilder().setFileKey(fileKey).build();
 		} catch (Exception e) {
-			logger.error("error during writing encoded data in buket", e);
+			logger.error("error during writing encoded data in bucket", e);
 		}
 		
-		return metoResponse;
+		return responseParameter;
   	}
+  	
+  	/**
+  	 * This method takes filename and search into bucket and returns a input stream
+  	 * @param request
+  	 * @return ResponseParameter.setStream()
+  	 */
 	
-	public MetoResponse getDocumentStream(MetoRequest request){
+	public ResponseParameter getDocumentStream(RequestParameter request){
 
-		String outputString = null;
-		GcsInputChannel readChannel = null;
-		MetoResponse metoResponse = new MetoResponse();
+		String outputString;
+		GcsInputChannel readChannel;
+		ResponseParameter responseParameter = new ResponseParameter();
 		
 		String filename = request.getFilename();
-		System.out.println("getting for the file : " + ENDPOINT_BASE + BUCKET + "/" + filename);
+		logger.info("getting for the file : " + ENDPOINT_BASE + BUCKET + "/" + filename);
 		GcsFilename fileName = getFileName(ENDPOINT_BASE + BUCKET + "/" + filename.toLowerCase());
 
 		try {
 			readChannel = gcsService.openPrefetchingReadChannel(fileName, 0, BUFFER_SIZE);
 			outputString = IOUtils.toString(Channels.newInputStream(readChannel), "UTF-8");
 			
-			ByteArrayInputStream bais = new ByteArrayInputStream(outputString.getBytes());
-		    InputStream b64is = MimeUtility.decode(bais, "base64");
-		    
-		    metoResponse.setStream(b64is);
+			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(outputString.getBytes());
+		    InputStream is = MimeUtility.decode(byteArrayInputStream, "base64");
+        responseParameter = new ResponseParameter.ResponseParameterBuilder().setInputStream(is).build();
+		   // responseParameter.setStream(b64is);
 						
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while fetching" + filename + "from GCS", e);
 		}
-		
-		return metoResponse;
+		return responseParameter;
 	}
 	
 	
 	/**
-	 * 
+	 * creates a filename for each entry in bucket
 	 * @param req
-	 * @return
+	 * @return GcsFilename
 	 */
 	private GcsFilename getFileName(String req) {
 		String[] splits = req.split("/", 4);
