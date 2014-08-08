@@ -1,0 +1,10 @@
+# Due to proxy cant seem to use maven to deploy
+# So use appcfg
+# appcfg uses what ever java is first on the path.
+# For me this isn't a sdk (its a jre)
+# this is because the user path variable (pointing to the sdk) is appended to the system path var which points to jre
+# The first line fixes that 
+
+mvn clean install
+set PATH=%JAVA_HOME%\bin;%PATH%
+"C:\repository\com\google\appengine\appengine-java-sdk\1.9.6\appengine-java-sdk\appengine-java-sdk-1.9.6\bin\appcfg.cmd" --proxy=151.170.111.141:8080 --passin --no_cookies update target\retail-online-archive-1.0-SNAPSHOT

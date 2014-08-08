@@ -1,0 +1,7 @@
+<div>
+	<div id="obsDataView" ng-controller="dataTable">
+        <label for="pivotParamSelector">Pivot data on:</label> <select id="pivotParamSelector" ng-model="pivotParam" ng-options="param.value as param.label for param in params" value=""></select>
+		<div id="obsDataTable" class="gridStyle" ng-grid="gridOptions">
+		</div>
+	</div>
+</div>

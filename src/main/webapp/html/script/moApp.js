@@ -1,0 +1,1 @@
+var moApp = angular.module("moApp", ["dataSelectorModule"]);
