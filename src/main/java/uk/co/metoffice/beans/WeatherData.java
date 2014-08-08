@@ -1,5 +1,8 @@
 package uk.co.metoffice.beans;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.Date;
@@ -13,13 +16,26 @@ import java.util.Date;
 @Entity
 public class WeatherData {
 
-	@Id	
+	@Id
+  @JsonIgnore
 	private String id;
+
+  @JsonProperty
 	private Date weatherDate;
+
+  @JsonProperty
   private String day;
+
+  @JsonProperty
 	private String regions;
+
+  @JsonProperty
 	private String temperature;
+
+  @JsonProperty
 	private String pressure;
+
+  @JsonIgnore
 	private String clientId;
 	
 	public WeatherData(){}
@@ -34,7 +50,7 @@ public class WeatherData {
 		this.pressure = pressure;
 		this.clientId = clientId;
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -98,8 +114,9 @@ public class WeatherData {
 				+ day + ",regions= " + regions + ", temperature= " + temperature + ", pressure= "
 				+ pressure + "clientId= " + clientId +  "]";
 	}
-	
-	public String getStringRepresentation(){
+
+  @JsonIgnore
+  public String getStringRepresentation(){
 		return this.getWeatherDate()+","+this.getRegions()+","+this.getTemperature()+","+this.getPressure() + "\n";
 	}
     

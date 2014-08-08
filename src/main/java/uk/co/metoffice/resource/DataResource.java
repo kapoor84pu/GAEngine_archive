@@ -8,6 +8,7 @@ import uk.co.metoffice.business.MetoBusiness;
 import uk.co.metoffice.service.JPAPersistenceService;
 import uk.co.metoffice.util.AppHelper;
 import uk.co.metoffice.util.Constants;
+import uk.co.metoffice.util.JsonGenerator;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -99,7 +100,7 @@ public class DataResource {
     try {
       dateFrom = AppHelper.convertStringIntoDate(fromDate);
       dateTo = AppHelper.convertStringIntoDate(toDate);
-      
+
       //if region is not present, persistWeatherData all the regions by default
       if (regions.isEmpty()) {
         regions = Regions.getAllRegions();
@@ -112,6 +113,8 @@ public class DataResource {
 
       list = jpaPersistenceService.getWeatherDataBetweenDates(dateFrom, dateTo, regions, clientId, day);
 
+
+
       for (String temp : regions) {
         str.append(temp);
         str.append("-");
@@ -122,10 +125,14 @@ public class DataResource {
         dayString.append("-");
       }
 
-
+      System.out.println("***********************************************************");
+      System.out.println(JsonGenerator.jsonGenerator(list));
+      System.out.println("***********************************************************");
 
       regionList = str.toString();
       dayList = dayString.toString();
+
+      String jsonArray = JsonGenerator.jsonGenerator(list);
 
       logger.debug("list of regions" + regionList);
 
@@ -134,6 +141,7 @@ public class DataResource {
       req.setAttribute("regionList", regionList);
       req.setAttribute("dayList", dayList);
       req.setAttribute("list", list);
+      req.setAttribute("jsonArray", jsonArray);
 
       logger.debug("printing retrieved list" + list.toString());
       logger.trace("exiting post method");

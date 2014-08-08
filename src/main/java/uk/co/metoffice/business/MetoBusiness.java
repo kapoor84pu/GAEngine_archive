@@ -177,14 +177,14 @@ public class MetoBusiness {
 		
 		/**
 		 * This method converts a String into WeatherData objects
-		 * @param incomingString that is similar to 
+		 * @param rawCSVData that is similar to
 		 * 		01072014,LON,1.0,2.0,3.0
 		 * 		01072014,SE_ENG,1.0,2.0,3.0
 		 * 		01072014,SE_ENG,1.0,2.0,3.0
 		 * @return list of WeatherData objects.
 		 */
-		private List<WeatherData> createList(String incomingString, String clientId){
-			String receivedString = incomingString.replaceAll("\\s+","\n");
+		private List<WeatherData> createList(String rawCSVData, String clientId){
+			String receivedString = rawCSVData.replaceAll("\\s+","\n");
 			logger.info("inside createList method");
 			List<WeatherData> list = new ArrayList<WeatherData>();
 			
@@ -195,6 +195,7 @@ public class MetoBusiness {
 				Date date = AppHelper.convertStringIntoDate(split[0], "ddMMyyyy");
 
         String day =  AppHelper.getDay(date);
+
 				tempdata = new WeatherData(split[0] + ":" + split[1]+":" + clientId, date, day, split[1], split[2], split[3],clientId);
 				list.add(tempdata);
 				logger.info("adding csv data to list");
@@ -207,7 +208,7 @@ public class MetoBusiness {
 	     * convert XML file into java objects
 	     * @param file
 	     * @return MetaData objects
-	     * @throws MessagingException
+	     * @throws javax.mail.MessagingException
 	     */
 		private MetaData generateMetadata(IngestionConfiguration file)
 				throws MessagingException {

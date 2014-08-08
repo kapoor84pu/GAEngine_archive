@@ -67,7 +67,7 @@ public class ProductResource {
 	   * Retrieves a file from GCS and returns it in the http response.
 	   * If a get comes in for request path /gcs/bucketName/filename this will be interpreted as
 	   * a request to read the GCS file named filename in the bucket bucketName.
-	   * @throws MessagingException 
+	   * @throws javax.mail.MessagingException
 	   */
 		@GET
 	  @Path("save/{filename}")

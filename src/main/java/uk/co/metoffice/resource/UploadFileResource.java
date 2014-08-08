@@ -34,8 +34,8 @@ public class UploadFileResource{
 	 * 
 	 * @param file
 	 * @return
-	 * @throws IOException
-	 * @throws MessagingException
+	 * @throws java.io.IOException
+	 * @throws javax.mail.MessagingException
 	 */
     @POST
     @Path("/upload/xml")
