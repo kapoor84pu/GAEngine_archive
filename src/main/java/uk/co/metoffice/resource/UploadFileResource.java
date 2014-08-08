@@ -2,10 +2,10 @@ package uk.co.metoffice.resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.metoffice.beans.ResponseParameter;
 import uk.co.metoffice.beans.RequestParameter;
+import uk.co.metoffice.beans.ResponseParameter;
 import uk.co.metoffice.beans.xml.IngestionConfiguration;
-import uk.co.metoffice.business.MetoBusiness;
+import uk.co.metoffice.business.Controller;
 
 import javax.mail.MessagingException;
 import javax.ws.rs.Consumes;
@@ -24,7 +24,7 @@ import java.io.IOException;
 public class UploadFileResource{
 	private final static Logger logger = LoggerFactory.getLogger(UploadFileResource.class);
  
-	private MetoBusiness business = new MetoBusiness();
+	private Controller controller = new Controller();
 
 	/**
 	 * ClientId= 1000001, fileType=PDF, category=MARKS_AND_SPENCER_REGIONAL_6_SHORT, ValidityDate=2014-07-16T09:46:30Z
@@ -48,7 +48,7 @@ public class UploadFileResource{
 		try{
       request = new RequestParameter.RequestParameterBuilder().setIngestionConfiguration(file).build();
 
-			responseParameter = business.ingestDocument(request);
+			responseParameter = controller.ingestDocument(request);
 			
 			if (responseParameter != null && responseParameter.getFileKey() != null){
 				builder = Response.status(200).entity("Uploaded file name : " + responseParameter.getFileKey());

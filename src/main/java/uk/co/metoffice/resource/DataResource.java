@@ -1,10 +1,9 @@
 package uk.co.metoffice.resource;
 
-import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.metoffice.beans.*;
-import uk.co.metoffice.business.MetoBusiness;
+import uk.co.metoffice.business.CSVDataController;
 import uk.co.metoffice.service.JPAPersistenceService;
 import uk.co.metoffice.util.AppHelper;
 import uk.co.metoffice.util.Constants;
@@ -30,7 +29,7 @@ import java.util.List;
 public class DataResource {
   private final static Logger logger = LoggerFactory.getLogger(DataResource.class);
 
-  private MetoBusiness business = new MetoBusiness();
+  private CSVDataController csvDataController = new CSVDataController();
 
   /**
    * The URL hit would be http://<DOMAIN>/meto/Weatherdata/ddmmyyyy/ddmmyyyy/id1-id2-id3
@@ -62,7 +61,7 @@ public class DataResource {
                                                       .setClientId(clientId)
                                                       .setDay(day)
                                                       .build();
-      ResponseParameter responseParameter = business.getHistoricalData(request);
+      ResponseParameter responseParameter = csvDataController.getHistoricalData(request);
       is = responseParameter.getStream();
     } catch (Exception ex) {
       logger.error("error in exporting CSV data", ex);
@@ -78,7 +77,7 @@ public class DataResource {
   @POST
   @Path("/All")
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public Viewable getCSVDataList(@Context HttpServletRequest req,
+  public String getCSVDataList(@Context HttpServletRequest req,
                                  @Context HttpServletResponse resp,
                                  @FormParam("fromDate") String fromDate,
                                  @FormParam("toDate") String toDate,
@@ -96,6 +95,9 @@ public class DataResource {
     StringBuilder dayString = new StringBuilder();
     JPAPersistenceService jpaPersistenceService = new JPAPersistenceService();
     Cookie[] cookies = req.getCookies();
+    String jsonArray = "[]";
+
+    System.out.println("received dates are :" + toDate + fromDate);
 
     try {
       dateFrom = AppHelper.convertStringIntoDate(fromDate);
@@ -125,14 +127,10 @@ public class DataResource {
         dayString.append("-");
       }
 
-      System.out.println("***********************************************************");
-      System.out.println(JsonGenerator.jsonGenerator(list));
-      System.out.println("***********************************************************");
-
       regionList = str.toString();
       dayList = dayString.toString();
 
-      String jsonArray = JsonGenerator.jsonGenerator(list);
+      jsonArray = JsonGenerator.jsonGenerator(list);
 
       logger.debug("list of regions" + regionList);
 
@@ -148,7 +146,7 @@ public class DataResource {
     } catch (Exception e) {
       logger.error("error while fetching data", e);
     }
-    return new Viewable("/jsp/viewHistoricalData.jsp");
+    return jsonArray;
   }
 
 }

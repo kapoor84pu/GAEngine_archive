@@ -14,4 +14,6 @@ public class Constants {
 
   public static final String OUTPUT_HEADER_CSV = "attachment; filename=" + "export.csv";
 
+  public static final int NUMBER_OF_PARAMETER = 4;
+
 }

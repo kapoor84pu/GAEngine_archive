@@ -1,7 +1,6 @@
 package uk.co.metoffice.util;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import uk.co.metoffice.beans.WeatherData;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
  */
 public class JsonGenerator {
 
-  public static String jsonGenerator(List<WeatherData> list){
+  public static <T> String jsonGenerator(List<T> list){
     String jsonString = null;
     ObjectMapper om = new ObjectMapper();
     try {

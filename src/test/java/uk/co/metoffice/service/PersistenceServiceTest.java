@@ -12,5 +12,5 @@ package uk.co.metoffice.service;
  * @since 0.0.1
  *  
  */
-public interface PersistenceService {
+public interface PersistenceServiceTest {
 }

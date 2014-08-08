@@ -1,13 +1,13 @@
 package uk.co.metoffice.resource;
 
-import com.sun.jersey.api.view.Viewable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import uk.co.metoffice.beans.MetaData;
-import uk.co.metoffice.beans.ResponseParameter;
 import uk.co.metoffice.beans.RequestParameter;
-import uk.co.metoffice.business.MetoBusiness;
+import uk.co.metoffice.beans.ResponseParameter;
+import uk.co.metoffice.business.ProductController;
 import uk.co.metoffice.util.AppHelper;
+import uk.co.metoffice.util.JsonGenerator;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.Cookie;
@@ -23,7 +23,7 @@ import java.util.List;
 public class ProductResource {
 	private final static Logger logger = LoggerFactory.getLogger(ProductResource.class);
 
-	private MetoBusiness business = new MetoBusiness();
+	private ProductController productController = new ProductController();
 	
 	/**
 	 * List the products between fromDate to toDate for a clientId
@@ -31,12 +31,13 @@ public class ProductResource {
 	 */
 	@POST
 	@Path("/All")
-	public Viewable getPDFList(@Context HttpServletRequest req,
+	public String getPDFList(@Context HttpServletRequest req,
 			@Context HttpServletResponse resp,
 			@FormParam("fromDate") String fromDate,
 			@FormParam("toDate") String toDate) {
 		
 		List<MetaData> list;
+    String jsonString = "[]";
 		ResponseParameter responseParameter;
 		Cookie[] cookie = req.getCookies();
 		String clientId = AppHelper.verifyCookie(cookie);
@@ -52,15 +53,16 @@ public class ProductResource {
 		logger.debug("printing fromDate and toDate" + fromDate + toDate);
 
 		try {
-			responseParameter = business.getHistoricalProduct(request);
+			responseParameter = productController.getHistoricalProduct(request);
 			list = responseParameter.getMetaDataList();
+      jsonString = JsonGenerator.jsonGenerator(list);
 			req.setAttribute("list", list);
 		} 
 		catch (Exception ex) {
 			logger.error("error while fetching products list",ex);
 		}
 
-		return new Viewable("/jsp/viewHistoricalProduct.jsp");
+		return jsonString;
 	}
 	
 	  /**
@@ -84,7 +86,7 @@ public class ProductResource {
                       .build();
 
 				//set file name in request and send over to business class.
-				responseParameter = business.getDocumentStream(request);
+				responseParameter = productController.getDocumentStream(request);
 				
 				if (responseParameter != null && responseParameter.getStream() != null){
 					builder = Response.ok(responseParameter.getStream())
