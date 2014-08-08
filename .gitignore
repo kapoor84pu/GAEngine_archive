@@ -1,2 +1,8 @@
 target/*
 datanucleus.log
+.settings/*
+LICENSE.TXT
+.idea/*
+.classpath
+.project
+retail-online-archive.iml
