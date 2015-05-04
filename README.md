@@ -1,4 +1,4 @@
-appengine-endpoints-helloendpoints-java-maven
+appengine-endpoints-java-maven
 =============================================
 
 A Web application for Google Cloud Endpoints in Java.
