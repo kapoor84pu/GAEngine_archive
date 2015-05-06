@@ -5,10 +5,11 @@ A Web application for Google Cloud Endpoints in Java.
 
 - [App Engine][1]
 
-- [Java][2]
+- [Java 7][2]
+- [Maven 3][3]
 
-- [Google Cloud Endpoints][3]
-- [Google App Engine Maven plugin][4]
+- [Google Cloud Endpoints][4]
+- [Google App Engine Maven plugin][5]
 
 
 1. Run the application with `mvn appengine:devserver`, and ensure it's
